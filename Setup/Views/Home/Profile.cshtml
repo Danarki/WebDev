@@ -1,0 +1,49 @@
+﻿@model Developer
+@{
+
+    ViewData["Description"] = "Dit is een ontwikkelaar, bla blaa bla";
+}
+<link rel="stylesheet" href="~/css/profile.css" />
+
+<div class="text-center">
+    <aside class="text-start">
+        <div class="fw-bold text-center">
+            @Model.FullName
+        </div>
+        <div class="image">
+            @if (@Model.ImageSrcs.Count == 1)
+            {
+                <img src="@Model.ImageSrcs.First()" class="profile-icon"/>
+            }
+            else
+            {
+                <div class="slideshow">
+                    @foreach (string imageSrc in @Model.ImageSrcs)
+                    {
+                        <div class="slide">
+                            <img src="@imageSrc" class="slide__image"/>
+                        </div>
+                    }
+                    <a class="slideshow__previous" onclick="changeSlide(-1)">&#10094;</a>
+                    <a class="slideshow__next" onclick="changeSlide(1)">&#10095;</a>
+                </div>
+            }
+            
+        </div>
+        <div class="mt-3 ps-2">
+            Skills:
+            <br/>
+            <ul>
+                @foreach (string skill in @Model.Skills)
+                {
+                    <li>@skill</li>
+                }
+            </ul>
+        </div>
+    </aside>
+    <section>
+        @Model.Description
+    </section>
+</div>
+
+<script src="~/js/profile.js"></script>

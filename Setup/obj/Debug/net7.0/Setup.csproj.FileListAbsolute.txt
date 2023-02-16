@@ -1,0 +1,62 @@
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.csproj.AssemblyReference.cache
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.AssemblyInfoInputs.cache
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.AssemblyInfo.cs
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.csproj.CoreCompileInputs.cache
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.RazorAssemblyInfo.cache
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.RazorAssemblyInfo.cs
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\appsettings.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\Setup.staticwebassets.runtime.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\Setup.exe
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\Setup.deps.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\Setup.runtimeconfig.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\Setup.dll
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\bin\Debug\net7.0\Setup.pdb
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.Setup.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.build.Setup.props
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Setup.props
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Setup.props
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\scopedcss\bundle\Setup.styles.css
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\scopedcss\projectbundle\Setup.bundle.scp.css
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.dll
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\refint\Setup.dll
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.pdb
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\Setup.genruntimeconfig.cache
+C:\Users\xr0133363\source\repos\_Server Technology 2223\Setup\Setup\obj\Debug\net7.0\ref\Setup.dll
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\appsettings.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\Setup.staticwebassets.runtime.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\Setup.exe
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\Setup.deps.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\Setup.runtimeconfig.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\Setup.dll
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\bin\Debug\net7.0\Setup.pdb
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.csproj.AssemblyReference.cache
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.AssemblyInfoInputs.cache
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.AssemblyInfo.cs
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.csproj.CoreCompileInputs.cache
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.RazorAssemblyInfo.cache
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.RazorAssemblyInfo.cs
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.Setup.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.build.Setup.props
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Setup.props
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Setup.props
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\scopedcss\bundle\Setup.styles.css
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\scopedcss\projectbundle\Setup.bundle.scp.css
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.dll
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\refint\Setup.dll
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.pdb
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\Setup.genruntimeconfig.cache
+C:\Users\Daan\Downloads\Setup v1.0\Setup\Setup\obj\Debug\net7.0\ref\Setup.dll
