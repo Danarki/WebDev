@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using Setup;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -1,23 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Setup.Models;
 using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
+using MySqlConnector;
+using System.Security.Policy;
 
 namespace Setup.Controllers
 {
     public class HomeController : Controller
     {
+        public static WebAppContext WebAppContext = new();
         private readonly ILogger<HomeController> _logger;
 
         private const string PageViews = "PageViews";
 
         private Developer _developer;
+
         public void IncreaseTrackerCookie()
         {
             string newValue = "1";
 
             if (Request.Cookies["tracker-cookie"] != null)
             {
-               newValue =  (int.Parse(Request.Cookies["tracker-cookie"]) + 1).ToString();
+                newValue = (int.Parse(Request.Cookies["tracker-cookie"]) + 1).ToString();
             }
 
             HttpContext.Response.Cookies.Append("tracker-cookie", newValue);
@@ -25,6 +30,8 @@ namespace Setup.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
+            WebAppContext.Database.EnsureCreated();
+
             _logger = logger;
             _developer = new Developer
             {
@@ -62,6 +69,18 @@ namespace Setup.Controllers
         {
             IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Contact";
+
+            int num1, num2, solution;
+
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            num1 = random.Next(1, 10);
+            num2 = random.Next(1, 10);
+
+            solution = num1 * num2;
+
+            @ViewData["captcha-num1"] = num1;
+            @ViewData["captcha-num2"] = num2;
+            @ViewData["captcha-solution"] = solution;
 
             return View(_developer);
         }

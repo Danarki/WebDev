@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UAAAHbPMP9PlCEp1ocUyRNYelCVl+mpuLL7oLA2CanE=",
+  "Hash": "lCPH2pHZYYmu2ZRvCLN+GyHF/MWBeFKSfxdju3qGkZ4=",
   "Source": "Setup",
   "BasePath": "_content/Setup",
   "Mode": "Default",
@@ -49,6 +49,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\Setup.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\wwwroot\\css\\contact.css",
+      "SourceId": "Setup",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\wwwroot\\",
+      "BasePath": "_content/Setup",
+      "RelativePath": "css/contact.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\contact.css"
     },
     {
       "Identity": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\wwwroot\\css\\profile.css",
@@ -134,6 +151,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\person-icon.png"
+    },
+    {
+      "Identity": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\wwwroot\\js\\contact.js",
+      "SourceId": "Setup",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\wwwroot\\",
+      "BasePath": "_content/Setup",
+      "RelativePath": "js/contact.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\contact.js"
     },
     {
       "Identity": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\wwwroot\\js\\GDPR.js",

@@ -39,6 +39,28 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "EntityFrameworkCore.Extensions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "MySql.Data.EntityFramework": {
+              "target": "Package",
+              "version": "[8.0.32, )"
+            },
+            "MySql.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.2.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
