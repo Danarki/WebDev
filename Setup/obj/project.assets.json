@@ -6983,9 +6983,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\Setup.csproj",
-      "projectName": "Setup",
-      "projectPath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\Setup.csproj",
+      "projectUniqueName": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj",
+      "projectName": "WebDev",
+      "projectPath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj",
       "packagesPath": "C:\\Users\\Daan\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\obj\\",
       "projectStyle": "PackageReference",

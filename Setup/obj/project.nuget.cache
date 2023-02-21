@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Urz9gzik9tK31oC9ulhgcxEiF43WU3Ql8cE8r+3QoGNTuG0oCfZDwReV7DgMoIV4vg2ZgKfSWRXhVWoRcCp6TQ==",
+  "dgSpecHash": "R9tna8U9waqQkTg6LDZ/htEQeJZC8O7BvWm+Nyal/YmINdngwFalY/5I60xdpOwb6WxjytfI92AVblVWyoMxIQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\Setup.csproj",
+  "projectFilePath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Daan\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\Daan\\.nuget\\packages\\entityframeworkcore.extensions\\5.0.0\\entityframeworkcore.extensions.5.0.0.nupkg.sha512",
