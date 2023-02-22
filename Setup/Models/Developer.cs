@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Setup.Models
+namespace WebDev.Models
 {
     public class Developer
     {

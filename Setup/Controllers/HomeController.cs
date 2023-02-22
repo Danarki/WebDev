@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Setup.Models;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using MySqlConnector;
 using System.Security.Policy;
+using WebDev.Models;
 
-namespace Setup.Controllers
+namespace WebDev.Controllers
 {
     public class HomeController : Controller
     {

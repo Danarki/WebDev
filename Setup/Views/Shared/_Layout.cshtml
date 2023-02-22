@@ -1,4 +1,7 @@
 ﻿@using System.Security.Principal
+@{
+    ViewData["LoggedIn"] = false;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,11 +10,13 @@
     <title>@ViewData["Title"] - Setup</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Setup.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebDev.styles.css" asp-append-version="true" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
 <body>
-    <header>
+<header>
+    @if (ViewData["LoggedIn"].Equals(true))
+    {
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
                 <div class="navbar-brand">@ViewData["CurrentPage"]</div>
@@ -37,7 +42,8 @@
                 </div>
             </div>
         </nav>
-    </header>
+    }
+</header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

@@ -1,0 +1,39 @@
+﻿.login-box {
+    border: 0.5px solid lightgray;
+    border-radius: 5px;
+    padding: 5%;
+    width: 80%;
+    margin: 10%;
+    background: white;
+    display: block;
+    float: left
+}
+
+input {
+    width: 100%;
+    margin-bottom: 3%;
+}
+
+#register-switch {
+    color: cornflowerblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+    #register-switch:hover {
+        color: blue;
+    }
+
+#login-switch {
+    color: cornflowerblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+    #login-switch:hover {
+        color: blue;
+    }
+
+.passwordLabel {
+    font-size: 0.75em;
+}

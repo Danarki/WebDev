@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Setup.Controllers;
+using WebDev.Controllers;
 
-namespace Setup.Models
+namespace WebDev.Models
 {
     public class ContactForm
     {

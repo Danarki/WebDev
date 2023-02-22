@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 
-namespace Setup.Controllers
+namespace WebDev.Controllers
 {
     public class MailController : Controller
     {

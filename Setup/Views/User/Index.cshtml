@@ -1,0 +1,69 @@
+﻿@ViewData["LoggedIn"]
+@ViewData["RegistrationMessage"]
+<link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+
+<div class="login-box">
+    <form id="login-form" asp-controller="User" asp-action="Login" method="post">
+        <label for="email">Email*</label>
+        <input name="email" type="email" required/>
+
+        <label for="password">Password*</label>
+        <input name="password" type="password" required/>
+
+        <input type="submit" value="Login"/>
+        
+        <a id="register-switch">Don't have an account?</a>
+    </form>
+    
+    <form id="register-form" class="visually-hidden" asp-controller="User" asp-action="Register" method="post">
+        <label for="email">Email*</label>
+        <input name="email" type="email" required/>
+
+        <label for="password">Password*</label>
+        <label for="password" class="passwordLabel">Must contain: 1 Uppercase, 1 lowercase, 1 number and 1 special character</label>
+        <input name="password" id="password" type="password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"/>
+
+        <label for="password-confirmation">Password Confirmation*</label>
+        <input name="passwordConfirmation" id="password-confirmation" type="password" minlength="8" required/>
+        
+        <label for="username">Username*</label>
+        <input name="username" type="text" required/>
+
+        <input type="submit" value="Register"/>
+        
+        <a id="login-switch">Already registered?</a>
+    </form>
+</div>
+
+<script>
+    $('#register-switch').click(function () {
+        $('#login-form').addClass("visually-hidden");
+        $('#register-form').removeClass("visually-hidden");
+    });
+    
+    $('#login-switch').click(function () {
+        $('#register-form').addClass("visually-hidden");
+        $('#login-form').removeClass("visually-hidden");
+    });
+    
+    let validated = false;
+
+    $("#register-form").on('submit', function (e) {
+        if (validated){
+            validated = false;
+            return;
+        }
+
+        e.preventDefault();
+        
+        let password = document.getElementById('password').value;
+        let passwordConfirmation = document.getElementById('password-confirmation').value;
+        
+        if (password != passwordConfirmation){
+            alert('Passwords are not equal!');
+        } else {
+            validated = true;
+            $("#register-form").submit();
+        }
+    });
+</script>

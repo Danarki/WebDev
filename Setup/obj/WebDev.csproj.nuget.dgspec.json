@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj": {}
+    "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\WebDev.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj": {
+    "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\WebDev.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj",
+        "projectUniqueName": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\WebDev.csproj",
         "projectName": "WebDev",
-        "projectPath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\WebDev.csproj",
+        "projectPath": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\WebDev.csproj",
         "packagesPath": "C:\\Users\\Daan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Daan\\Downloads\\Setup v1.0\\Setup\\Setup\\obj\\",
+        "outputPath": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Daan\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "BCrypt.Net": {
+              "target": "Package",
+              "version": "[0.1.0, )"
+            },
             "EntityFramework": {
               "target": "Package",
               "version": "[6.4.4, )"
@@ -47,6 +51,10 @@
             "EntityFrameworkCore.Extensions": {
               "target": "Package",
               "version": "[5.0.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[7.0.4, )"
             },
             "MySql.Data.EntityFramework": {
               "target": "Package",
