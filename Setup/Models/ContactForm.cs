@@ -20,8 +20,8 @@ namespace WebDev.Models
 
         public void Insert()
         {
-            var context = HomeController.WebAppContext;
-            context.Database.EnsureCreated();
+            var context = DatabaseController.Context;
+            //context.Database.EnsureCreated();
             context.ContactForms.Add(this);
             context.SaveChanges();
         }

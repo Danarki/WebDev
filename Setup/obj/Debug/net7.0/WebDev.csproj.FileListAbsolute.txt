@@ -148,13 +148,9 @@ C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\n
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-arm64\native\sni.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-x64\native\sni.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win-x86\native\sni.dll
@@ -392,3 +388,13 @@ C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\n
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\BCrypt.Net.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Azure.Core.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Azure.Identity.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.SqlServer.Server.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\System.Memory.Data.dll

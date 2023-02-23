@@ -7,6 +7,13 @@ namespace WebDev.Controllers
 {
     public class UserController : Controller
     {
+        private readonly WebAppContext _context;
+
+        public UserController(WebAppContext context)
+        {
+            _context = context;
+        }
+
         [HttpPost]
         public void Login(string email, string password)
         {
@@ -42,7 +49,7 @@ namespace WebDev.Controllers
                 }
                 else
                 {
-                    user.Insert();
+                    user.Insert(_context);
 
                     @ViewData["RegistrationMessage"] = "User has been created, check your email.";
                 }
@@ -57,7 +64,6 @@ namespace WebDev.Controllers
 
         public IActionResult Index()
         {
-            HomeController.WebAppContext.Database.EnsureCreated();
             //@ViewData["LoggedIn"] = true;
 
             return View();

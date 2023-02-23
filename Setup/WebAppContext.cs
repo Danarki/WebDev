@@ -1,41 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore.Extensions;
-using WebDev.Models;
+﻿using WebDev.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebDev
 {
     public class WebAppContext : DbContext
     {
+        public WebAppContext(DbContextOptions<WebAppContext> options)
+            : base(options)
+        {
+        }
         public DbSet<ContactForm> ContactForms { get; set; }
         public DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseMySQL("server=localhost;database=cardigo;user=root;password=");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ContactForm>().ToTable("ContactForm");
+            modelBuilder.Entity<User>().ToTable("User");
+
             base.OnModelCreating(modelBuilder);
+        }
 
-            modelBuilder.Entity<ContactForm>(entity =>
-            {
-                entity.HasKey(e => e.ID);
-                entity.Property(e => e.Subject).IsRequired();
-                entity.Property(e => e.Message).IsRequired();
-                entity.Property(e => e.Email).IsRequired();
-            });
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=DESKTOP-DAAN;Database=cardigo;Trusted_Connection=True;Encrypt=False;");
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.ID);
-                entity.Property(e => e.Username).IsRequired();
-                entity.Property(e => e.Password).IsRequired();
-                entity.Property(e => e.Email).IsRequired();
-                entity.Property(e => e.PasswordToken);
-                entity.Property(e => e.VerifyToken);
-                entity.Property(e => e.VerifiedAt);
-            });
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }

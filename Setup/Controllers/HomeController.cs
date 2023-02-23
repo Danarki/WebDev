@@ -9,7 +9,6 @@ namespace WebDev.Controllers
 {
     public class HomeController : Controller
     {
-        public static WebAppContext WebAppContext = new();
         private readonly ILogger<HomeController> _logger;
 
         private const string PageViews = "PageViews";
@@ -30,7 +29,7 @@ namespace WebDev.Controllers
 
         public HomeController(ILogger<HomeController> logger)
         {
-            WebAppContext.Database.EnsureCreated();
+            //WebAppContext.Database.EnsureCreated();
 
             _logger = logger;
             _developer = new Developer
