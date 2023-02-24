@@ -1,5 +1,6 @@
-﻿@ViewData["LoggedIn"]
-@ViewData["RegistrationMessage"]
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
 <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
 
 <div class="login-box">

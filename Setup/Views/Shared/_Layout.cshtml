@@ -1,7 +1,7 @@
 ﻿@using System.Security.Principal
-@{
-    ViewData["LoggedIn"] = false;
-}
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +15,7 @@
 </head>
 <body>
 <header>
-    @if (ViewData["LoggedIn"].Equals(true))
+    @if (Accessor.HttpContext.Session.GetInt32("LoggedIn").Equals(1))
     {
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
