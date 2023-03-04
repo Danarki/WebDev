@@ -37,6 +37,7 @@ namespace WebDev.Controllers
             else
             {
                 HttpContext.Session.SetInt32("LoggedIn", 1);
+                HttpContext.Session.SetInt32("UserID", user.ID);
                 return Redirect("/Home");
             }
         }

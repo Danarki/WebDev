@@ -9,9 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<WebAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Server=DESKTOP-DAAN;Database=cardigo;Trusted_Connection=True;Encrypt=False;")
-
-    )
-    );
+    ));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -66,6 +64,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=User}/{action=Index}/{id?}");
+    //pattern: "{controller=User}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=LobbyOverview}/{id?}");
 
 app.Run();

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Runtime.InteropServices.JavaScript;
 using MySqlConnector;
 using System.Security.Policy;
 using WebDev.Models;
+using WebDev.Models.ViewModels;
 
 namespace WebDev.Controllers
 {
@@ -14,6 +16,10 @@ namespace WebDev.Controllers
         private const string PageViews = "PageViews";
 
         private Developer _developer;
+
+        private WebAppContext _context;
+
+        private List<GameRoom> _gameRooms;
 
         public void IncreaseTrackerCookie()
         {
@@ -27,11 +33,14 @@ namespace WebDev.Controllers
             HttpContext.Response.Cookies.Append("tracker-cookie", newValue);
         }
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, WebAppContext context)
         {
             //WebAppContext.Database.EnsureCreated();
 
             _logger = logger;
+
+            _context = context;
+
             _developer = new Developer
             {
                 FullName = "Daan Timmerman",
@@ -89,6 +98,50 @@ namespace WebDev.Controllers
             IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Privacy";
 
+            return View();
+        }
+
+        public IActionResult LobbyOverview()
+        {
+            HttpContext.Session.SetInt32("LoggedIn", 1);
+            HttpContext.Session.SetInt32("UserID", 7);
+
+            IncreaseTrackerCookie();
+            @ViewData["CurrentPage"] = "Lobby's";
+
+            var gameRooms = _context.GameRooms.ToList();
+
+            List<LobbyOverviewViewModel> lobbyViewModels = new List<LobbyOverviewViewModel>();
+            foreach (GameRoom gameRoom in gameRooms)
+            {
+                LobbyOverviewViewModel lobbyViewModel = new LobbyOverviewViewModel();
+
+
+                lobbyViewModel.Game = 
+                    _context.GameTypes.Where(x => x.ID == gameRoom.GameID).FirstOrDefault().Name ?? "Niet gevonden!";
+                lobbyViewModel.Name = gameRoom.Name;
+                lobbyViewModel.Id = gameRoom.ID;
+                lobbyViewModel.OwnerName =
+                    _context.Users.Where(x => x.ID == gameRoom.OwnerID).FirstOrDefault().Username ?? "Niet gevonden!";
+
+                lobbyViewModels.Add(lobbyViewModel);
+            }
+
+            dynamic model = new ExpandoObject();
+
+            model.LobbyRows = lobbyViewModels;
+
+            model.GameTypes = _context.GameTypes.ToList();
+
+            return View(model);
+        }
+
+        public IActionResult Lobby(int? id)
+        {
+            if (id == null)
+            {
+                return Redirect("/");
+            }
             return View();
         }
 

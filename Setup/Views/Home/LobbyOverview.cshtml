@@ -1,0 +1,102 @@
+﻿@using WebDev.Models.ViewModels
+@model dynamic
+
+<link rel="stylesheet" href="css/lobby.css" />
+
+<div class="lobby-container">
+    <div class="pop-up">
+        <h1>Create a lobby</h1>
+        <form action="CreateRoom" method="post" id="create-room-form">
+            <label for="lobby-name">Lobby name</label>
+            <input id="lobby-name" type="text" name="lobbyname" maxlength="32" required />
+
+            <label for="game">Game</label>
+            <select name="game" id="game">
+                <option>Select a game for the lobby</option>
+                @foreach (GameType gameType in Model.GameTypes)
+                {
+                    <option value="@gameType.ID">@gameType.Name</option>
+                }
+            </select>
+            <div class="border-box-bottom">
+                <button class="cancel_button" style="margin: 1%; flex: 1">Cancel</button>
+                <input type="submit" class="create_button" style="margin: 1%; flex: 1" value="Create Room" />
+            </div>
+        </form>
+    </div>
+
+    <div class="rooms-table">
+        <button class="create_button pop_up_button">Create Room</button>
+        <table>
+            <tr>
+                <th>Gameroom</th>
+                <th>Gametype</th>
+                <th>Owner</th>
+                <th>Actions</th>
+            </tr>
+            @foreach (LobbyOverviewViewModel lobbyViewModel in Model.LobbyRows)
+            {
+                <tr>
+                    <td>@lobbyViewModel.Name</td>
+                    <td>@lobbyViewModel.Game</td>
+                    <td>@lobbyViewModel.OwnerName</td>
+                    <td>
+                        <button class="join_button" value="@lobbyViewModel.Id">Join Room</button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+    $(".join_button").click(function () {
+        let id = $(this).val();
+        
+        window.location.href = '/Home/Lobby/' + id;
+    });
+
+    $(".pop_up_button").click(function (e) {
+        $(".rooms-table").fadeOut(function () {
+            $(".pop-up").fadeIn();
+        });
+    })
+
+    $(".cancel_button").click(function (e) {
+        e.preventDefault(); // stop required field from showing pop-up
+
+        $(".pop-up").fadeOut(function () {
+            $(".rooms-table").fadeIn();
+        });
+    })
+
+    $("#create-room-form").submit(function (e) {
+        e.preventDefault();
+
+
+        let url = '/api/CreateRoom?';
+        let gameId, lobbyName;
+
+        gameId = document.getElementById('game').value;
+        lobbyName = document.getElementById('lobby-name').value;
+
+        let parameterFormat =
+            'gameId=' + gameId
+            + '&lobbyName=' + lobbyName
+            + '&ownerId=1';
+
+        $.ajax({
+            type: "POST",
+            url: url + parameterFormat,
+
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            async: true,
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        })
+    });
+</script>

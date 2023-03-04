@@ -7,10 +7,18 @@ using WebDev.Models;
 
 namespace WebDev.Controllers
 {
-    [Route("api/SendContact")]
+    [Route("api/")]
     [ApiController]
     public class APIController : ControllerBase
     {
+        private WebAppContext _context;
+
+        public APIController(WebAppContext context)
+        {
+            _context = context;
+        }
+
+        [Route("SendContact")]
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -36,7 +44,7 @@ namespace WebDev.Controllers
                 return BadRequest(sbrErrors.ToString());
             }
 
-            contactForm.Insert();
+            contactForm.Insert(_context);
 
             string body = "Message: " + contactForm.Message;
 
@@ -47,6 +55,47 @@ namespace WebDev.Controllers
                 );
 
             return Ok("Created Succesfully");
+        }
+
+        [Route("CreateRoom")]
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateRoom(string lobbyName, int gameId, int ownerId)
+        {
+            GameRoom room = new GameRoom();
+            room.Name = lobbyName;
+            room.GameID = gameId;
+            room.OwnerID = ownerId;
+
+            room.Insert(_context);
+
+            return Ok("Created Succesfully");
+        }
+
+        [Route("RemoveRoom")]
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> DeleteRoom(int roomID)
+        {
+            GameRoom gameRoom = _context.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
+
+            if (gameRoom == null)
+            {
+                return BadRequest("Room not found");
+            }
+
+            try
+            {
+                gameRoom.Delete(_context);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException);
+            }
+
+            return Ok("Removed Succesfully");
         }
     }
 }

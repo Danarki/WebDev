@@ -18,10 +18,8 @@ namespace WebDev.Models
         [Required]
         public string Email { get; set; } = null!;
 
-        public void Insert()
+        public void Insert(WebAppContext context)
         {
-            var context = DatabaseController.Context;
-            //context.Database.EnsureCreated();
             context.ContactForms.Add(this);
             context.SaveChanges();
         }
