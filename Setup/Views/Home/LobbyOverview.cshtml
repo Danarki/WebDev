@@ -1,7 +1,7 @@
 ﻿@using WebDev.Models.ViewModels
 @model dynamic
 
-<link rel="stylesheet" href="css/lobby.css" />
+<link rel="stylesheet" href="~/css/lobby.css" />
 
 <div class="lobby-container">
     <div class="pop-up">
@@ -83,7 +83,7 @@
         let parameterFormat =
             'gameId=' + gameId
             + '&lobbyName=' + lobbyName
-            + '&ownerId=1';
+            + '&ownerId=' + @Model.UserID;
 
         $.ajax({
             type: "POST",
@@ -92,7 +92,7 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             async: true,
             success: function (msg) {
-                alert(msg);
+                window.location.href = '/Home/Lobby/' + msg;
             },
             error: function (error) {
                 alert(error.responseText);

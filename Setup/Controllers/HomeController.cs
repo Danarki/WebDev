@@ -4,8 +4,11 @@ using System.Dynamic;
 using System.Runtime.InteropServices.JavaScript;
 using MySqlConnector;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Mvc.Filters;
 using WebDev.Models;
 using WebDev.Models.ViewModels;
+using MySqlX.XDevAPI;
+using Microsoft.AspNetCore.Http;
 
 namespace WebDev.Controllers
 {
@@ -33,10 +36,28 @@ namespace WebDev.Controllers
             HttpContext.Response.Cookies.Append("tracker-cookie", newValue);
         }
 
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+
+            IncreaseTrackerCookie();
+
+           //if (HttpContext.Session.GetInt32("LoggedIn") != 1)
+           //{
+           //    RouteValueDictionary route = new RouteValueDictionary(new
+           //    {
+           //        Controller = "User",
+           //        Action = "Index"
+           //    });
+           //
+           //   // context.Result = new RedirectToRouteResult(route);
+           //
+           //    return;
+           //}
+        }
+
         public HomeController(ILogger<HomeController> logger, WebAppContext context)
         {
-            //WebAppContext.Database.EnsureCreated();
-
             _logger = logger;
 
             _context = context;
@@ -60,14 +81,13 @@ namespace WebDev.Controllers
 
         public IActionResult Index()
         {
-            IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Home";
+
             return View();
         }
 
         public IActionResult Profile()
         {
-            IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Profile page";
 
             return View(_developer);
@@ -75,7 +95,6 @@ namespace WebDev.Controllers
 
         public IActionResult Contact()
         {
-            IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Contact";
 
             int num1, num2, solution;
@@ -95,7 +114,6 @@ namespace WebDev.Controllers
 
         public IActionResult Privacy()
         {
-            IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Privacy";
 
             return View();
@@ -104,9 +122,8 @@ namespace WebDev.Controllers
         public IActionResult LobbyOverview()
         {
             HttpContext.Session.SetInt32("LoggedIn", 1);
-            HttpContext.Session.SetInt32("UserID", 7);
+            HttpContext.Session.SetInt32("UserID", 2);
 
-            IncreaseTrackerCookie();
             @ViewData["CurrentPage"] = "Lobby's";
 
             var gameRooms = _context.GameRooms.ToList();
@@ -115,7 +132,6 @@ namespace WebDev.Controllers
             foreach (GameRoom gameRoom in gameRooms)
             {
                 LobbyOverviewViewModel lobbyViewModel = new LobbyOverviewViewModel();
-
 
                 lobbyViewModel.Game = 
                     _context.GameTypes.Where(x => x.ID == gameRoom.GameID).FirstOrDefault().Name ?? "Niet gevonden!";
@@ -133,16 +149,59 @@ namespace WebDev.Controllers
 
             model.GameTypes = _context.GameTypes.ToList();
 
+            model.UserID = HttpContext.Session.GetInt32("UserID");
+
             return View(model);
         }
 
         public IActionResult Lobby(int? id)
         {
-            if (id == null)
+            HttpContext.Session.SetInt32("LoggedIn", 1);
+            HttpContext.Session.SetInt32("UserID", 2);
+            id = 3;
+            //if (id == null)
+            //{
+            //    return Redirect("/");
+            //}
+
+            int? UserId = HttpContext.Session.GetInt32("UserID");
+            GameRoom room = _context.GameRooms.Where(x => x.ID == id).FirstOrDefault();
+
+            if (UserId == null || room == null)
             {
                 return Redirect("/");
             }
-            return View();
+
+
+            ConnectedUser connectedUser = new ConnectedUser();
+            connectedUser.UserID = (int)UserId;
+            connectedUser.RoomID = (int)id;
+
+            connectedUser.Insert(_context);
+
+            LobbyViewModel lobbyViewModel = new LobbyViewModel();
+            List<ConnectedUser> connectedUsers = _context.ConnectedUsers.Where(x => x.RoomID == id).ToList();
+
+            List<User> userList = new List<User>();
+
+            foreach (var user in connectedUsers)
+            {
+                User foundUser = _context.Users.Where(x => x.ID == user.UserID)
+                    .Select(u => new User() 
+                    { 
+                        ID = u.ID, 
+                        Username = u.Username
+                    }).FirstOrDefault();
+                
+                if (foundUser != null)
+                    userList.Add(foundUser);
+            }
+
+            lobbyViewModel.UserList = userList;
+
+            lobbyViewModel.OwnerID = room.OwnerID;
+
+            return View(lobbyViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

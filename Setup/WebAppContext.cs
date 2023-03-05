@@ -13,6 +13,7 @@ namespace WebDev
         public DbSet<User> Users { get; set; }
         public DbSet<GameRoom> GameRooms { get; set; }
         public DbSet<GameType> GameTypes { get; set; }
+        public DbSet<ConnectedUser> ConnectedUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +21,7 @@ namespace WebDev
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<GameRoom>().ToTable("GameRoom");
             modelBuilder.Entity<GameType>().ToTable("GameTypes");
+            modelBuilder.Entity<ConnectedUser>().ToTable("ConnectedUsers");
 
             base.OnModelCreating(modelBuilder);
         }

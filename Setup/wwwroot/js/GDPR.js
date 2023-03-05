@@ -1,10 +1,9 @@
 ﻿class GDPR {
     constructor() {
-        console.log(this.getCookieStatus(), 1);
-        console.log(122);
         this.showStatus();
-       // this.showContent();
+
         this.bindEvents();
+
         if (!this.getCookieStatus()) this.showGDPR()
         else this.hideGDPR()
     }

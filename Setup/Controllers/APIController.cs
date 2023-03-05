@@ -70,7 +70,7 @@ namespace WebDev.Controllers
 
             room.Insert(_context);
 
-            return Ok("Created Succesfully");
+            return Ok(room.ID);
         }
 
         [Route("RemoveRoom")]
