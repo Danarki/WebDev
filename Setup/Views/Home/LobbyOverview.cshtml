@@ -53,7 +53,7 @@
     $(".join_button").click(function () {
         let id = $(this).val();
         
-        window.location.href = '/Home/Lobby/' + id;
+        window.location.href = '/Lobby/Index/' + id;
     });
 
     $(".pop_up_button").click(function (e) {
@@ -92,7 +92,7 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             async: true,
             success: function (msg) {
-                window.location.href = '/Home/Lobby/' + msg;
+                window.location.href = '/Lobby/Index/' + msg;
             },
             error: function (error) {
                 alert(error.responseText);

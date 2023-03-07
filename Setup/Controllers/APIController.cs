@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WebDev.Models;
@@ -67,6 +68,11 @@ namespace WebDev.Controllers
             room.Name = lobbyName;
             room.GameID = gameId;
             room.OwnerID = ownerId;
+
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            room.OwnerToken = new string(Enumerable.Repeat(chars, 16)
+                .Select(s => s[new Random(Guid.NewGuid().GetHashCode()).Next(s.Length)]).ToArray());
 
             room.Insert(_context);
 

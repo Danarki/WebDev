@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Dynamic;
-using System.Runtime.InteropServices.JavaScript;
-using MySqlConnector;
-using System.Security.Policy;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WebDev.Models;
 using WebDev.Models.ViewModels;
-using MySqlX.XDevAPI;
-using Microsoft.AspNetCore.Http;
+using System;
 
 namespace WebDev.Controllers
 {
@@ -42,18 +38,18 @@ namespace WebDev.Controllers
 
             IncreaseTrackerCookie();
 
-           //if (HttpContext.Session.GetInt32("LoggedIn") != 1)
-           //{
-           //    RouteValueDictionary route = new RouteValueDictionary(new
-           //    {
-           //        Controller = "User",
-           //        Action = "Index"
-           //    });
-           //
-           //   // context.Result = new RedirectToRouteResult(route);
-           //
-           //    return;
-           //}
+            if (HttpContext.Session.GetInt32("LoggedIn") != 1)
+            {
+                RouteValueDictionary route = new RouteValueDictionary(new
+                {
+                    Controller = "User",
+                    Action = "Index"
+                });
+
+                //context.Result = new RedirectToRouteResult(route);
+
+                return;
+            }
         }
 
         public HomeController(ILogger<HomeController> logger, WebAppContext context)
@@ -121,9 +117,6 @@ namespace WebDev.Controllers
 
         public IActionResult LobbyOverview()
         {
-            HttpContext.Session.SetInt32("LoggedIn", 1);
-            HttpContext.Session.SetInt32("UserID", 2);
-
             @ViewData["CurrentPage"] = "Lobby's";
 
             var gameRooms = _context.GameRooms.ToList();
@@ -133,7 +126,7 @@ namespace WebDev.Controllers
             {
                 LobbyOverviewViewModel lobbyViewModel = new LobbyOverviewViewModel();
 
-                lobbyViewModel.Game = 
+                lobbyViewModel.Game =
                     _context.GameTypes.Where(x => x.ID == gameRoom.GameID).FirstOrDefault().Name ?? "Niet gevonden!";
                 lobbyViewModel.Name = gameRoom.Name;
                 lobbyViewModel.Id = gameRoom.ID;
@@ -152,56 +145,6 @@ namespace WebDev.Controllers
             model.UserID = HttpContext.Session.GetInt32("UserID");
 
             return View(model);
-        }
-
-        public IActionResult Lobby(int? id)
-        {
-            HttpContext.Session.SetInt32("LoggedIn", 1);
-            HttpContext.Session.SetInt32("UserID", 2);
-            id = 3;
-            //if (id == null)
-            //{
-            //    return Redirect("/");
-            //}
-
-            int? UserId = HttpContext.Session.GetInt32("UserID");
-            GameRoom room = _context.GameRooms.Where(x => x.ID == id).FirstOrDefault();
-
-            if (UserId == null || room == null)
-            {
-                return Redirect("/");
-            }
-
-
-            ConnectedUser connectedUser = new ConnectedUser();
-            connectedUser.UserID = (int)UserId;
-            connectedUser.RoomID = (int)id;
-
-            connectedUser.Insert(_context);
-
-            LobbyViewModel lobbyViewModel = new LobbyViewModel();
-            List<ConnectedUser> connectedUsers = _context.ConnectedUsers.Where(x => x.RoomID == id).ToList();
-
-            List<User> userList = new List<User>();
-
-            foreach (var user in connectedUsers)
-            {
-                User foundUser = _context.Users.Where(x => x.ID == user.UserID)
-                    .Select(u => new User() 
-                    { 
-                        ID = u.ID, 
-                        Username = u.Username
-                    }).FirstOrDefault();
-                
-                if (foundUser != null)
-                    userList.Add(foundUser);
-            }
-
-            lobbyViewModel.UserList = userList;
-
-            lobbyViewModel.OwnerID = room.OwnerID;
-
-            return View(lobbyViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Danarki/WebDev/issues"
   },
-  "homepage": "https://github.com/Danarki/WebDev#readme"
+  "homepage": "https://github.com/Danarki/WebDev#readme",
+  "dependencies": {
+    "@microsoft/signalr": "^7.0.3"
+  }
 }

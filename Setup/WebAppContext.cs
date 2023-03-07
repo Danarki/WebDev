@@ -5,6 +5,10 @@ namespace WebDev
 {
     public class WebAppContext : DbContext
     {
+        public WebAppContext()
+        {
+
+        }
         public WebAppContext(DbContextOptions<WebAppContext> options)
             : base(options)
         {

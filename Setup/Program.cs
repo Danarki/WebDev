@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using WebDev;
 using WebDev.Controllers;
-using Microsoft.Extensions.DependencyInjection;
+using WebDev.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,12 +20,13 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -34,7 +35,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<WebAppContext>();
-
+    
     DbInitializer.Initialize(context);
 
     // context.Database.Migrate();
@@ -50,10 +51,10 @@ if (!app.Environment.IsDevelopment())
 else
 {
     app.UseDeveloperExceptionPage();
-    //app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -62,9 +63,13 @@ app.UseSession();
 
 app.UseAuthorization();
 
+app.UseAuthentication();
+
+app.MapHub<GameRoomHub>("/signalr");
+
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=User}/{action=Index}/{id?}");
-    pattern: "{controller=Home}/{action=Lobby}/{id?}");
+    pattern: "{controller=User}/{action=Index}/{id?}");
+    //pattern: "{controller=Home}/{action=Lobby}/{id?}");
 
 app.Run();

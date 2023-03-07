@@ -7,11 +7,9 @@ namespace WebDev.Models
         public int ID { get; set; }
 
         [Required]
-        public GameRoom Room { get; set; }
         public int RoomID { get; set; }
 
         [Required]
-        public User User { get; set; }
         public int UserID { get; set; }
 
         public void Insert(WebAppContext context)

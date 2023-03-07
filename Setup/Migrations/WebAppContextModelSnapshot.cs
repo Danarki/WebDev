@@ -22,6 +22,21 @@ namespace WebDev.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("GameRoomUser", b =>
+                {
+                    b.Property<int>("RoomsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersID")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoomsID", "UsersID");
+
+                    b.HasIndex("UsersID");
+
+                    b.ToTable("GameRoomUser");
+                });
+
             modelBuilder.Entity("WebDev.Models.ConnectedUser", b =>
                 {
                     b.Property<int>("ID")
@@ -38,11 +53,29 @@ namespace WebDev.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("RoomID");
+                    b.ToTable("ConnectedUsers", (string)null);
+                });
+
+            modelBuilder.Entity("WebDev.Models.Connection", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsConnected")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("ConnectedUsers", (string)null);
+                    b.ToTable("Connection");
                 });
 
             modelBuilder.Entity("WebDev.Models.ContactForm", b =>
@@ -89,6 +122,10 @@ namespace WebDev.Migrations
 
                     b.Property<int>("OwnerID")
                         .HasColumnType("int");
+
+                    b.Property<string>("OwnerToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
@@ -154,23 +191,26 @@ namespace WebDev.Migrations
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("WebDev.Models.ConnectedUser", b =>
+            modelBuilder.Entity("GameRoomUser", b =>
                 {
-                    b.HasOne("WebDev.Models.GameRoom", "Room")
+                    b.HasOne("WebDev.Models.GameRoom", null)
                         .WithMany()
-                        .HasForeignKey("RoomID")
+                        .HasForeignKey("RoomsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebDev.Models.User", "User")
+                    b.HasOne("WebDev.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UsersID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Room");
-
-                    b.Navigation("User");
+            modelBuilder.Entity("WebDev.Models.Connection", b =>
+                {
+                    b.HasOne("WebDev.Models.User", null)
+                        .WithMany("Connections")
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("WebDev.Models.GameRoom", b =>
@@ -182,6 +222,11 @@ namespace WebDev.Migrations
                         .IsRequired();
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("WebDev.Models.User", b =>
+                {
+                    b.Navigation("Connections");
                 });
 #pragma warning restore 612, 618
         }

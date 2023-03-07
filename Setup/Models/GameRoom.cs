@@ -17,6 +17,11 @@ namespace WebDev.Models
         [Required]
         public int OwnerID { get; set; }
 
+        [Required]
+        public string OwnerToken { get; set; }
+
+        public virtual ICollection<User> Users { get; set; }
+
         public void Insert(WebAppContext context)
         {
             context.GameRooms.Add(this);

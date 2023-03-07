@@ -45,8 +45,20 @@
       "PackagePath": "staticwebassets\\js\\contact.js"
     },
     {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\js\\lobby.js",
+      "PackagePath": "staticwebassets\\js\\lobby.js"
+    },
+    {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\js\\profile.js",
       "PackagePath": "staticwebassets\\js\\profile.js"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
+      "PackagePath": "staticwebassets\\js\\signalr\\dist\\browser\\signalr.js"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",
+      "PackagePath": "staticwebassets\\js\\signalr\\dist\\browser\\signalr.min.js"
     },
     {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\js\\site.js",

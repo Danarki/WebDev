@@ -8,7 +8,7 @@ namespace WebDev.Models
 {
     [Table("users")]
     public class User
-    {
+    { 
         public int ID { get; set; }
 
         [Required]
@@ -26,6 +26,10 @@ namespace WebDev.Models
         public DateTime? VerifiedAt { get; set; }
 
         public string? PasswordToken { get; set; }
+
+        public ICollection<Connection> Connections { get; set; }
+
+        public virtual ICollection<GameRoom> Rooms { get; set; }
 
         public void Insert(WebAppContext context)
         {
