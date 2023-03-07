@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "YTYkpgkWzefz9HsHDgWWRrzi47sW3zABg970KDR0Ut0=",
+  "Hash": "1mj8+vVxGYKYYMhKlYl9Hdpxm8lokfuFOstOhpcAM6Q=",
   "Source": "WebDev",
   "BasePath": "_content/WebDev",
   "Mode": "Default",
@@ -1103,6 +1103,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\lobby.css"
+    },
+    {
+      "Identity": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\lobby-overview.css",
+      "SourceId": "WebDev",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\",
+      "BasePath": "_content/WebDev",
+      "RelativePath": "css/lobby-overview.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\lobby-overview.css"
     },
     {
       "Identity": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\login.css",

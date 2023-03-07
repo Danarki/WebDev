@@ -1,9 +1,6 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WebDev;
 using WebDev.Controllers;
-using WebDev.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +67,6 @@ app.MapHub<GameRoomHub>("/signalr");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=User}/{action=Index}/{id?}");
-    //pattern: "{controller=Home}/{action=Lobby}/{id?}");
+    //pattern: "{controller=Lobby}/{action=Index}/{id?}");
 
 app.Run();

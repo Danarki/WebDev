@@ -1,100 +1,33 @@
-﻿table {
-    width: 100%;
-    margin-top: 5%;
-}
-
-table, th {
-    border: 1px solid;
-    padding: 2% 0 2% 0;
-    text-align: center;
-}
-
-td {
-    border: 1px solid;
-    padding: 1% 0.5% 1% 0.5%;
-}
-
-.create_button {
-    background: #033dfc;
-    border: 1px solid #0027a8;
-    border-radius: 5px;
-    color: white;
-    float: right;
-    margin: 1% 0 1% 0;
-    font-weight: bold;
-}
-
-    .create_button:hover {
-        background: #0027a8;
-        border: 1px solid #0027a8;
-    }
-
-.join_button {
-    background: #09e326;
-    border: 1px solid green;
-    border-radius: 5px;
-    color: white;
-    padding: 2% 10% 2% 10%;
-    font-weight: bold;
-}
-
-    .join_button:hover {
-        background: green;
-        border: 1px solid green;
-    }
-
-.cancel_button {
-    background: #f20202;
-    border: 1px solid #b80202;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-}
-
-    .cancel_button:hover {
-        background: #b80202;
-        border: 1px solid #b80202;
-    }
-
-.lobby-container {
-    width: 100%;
-}
-
-.pop-up {
-    position: relative;
-    border: 1px solid lightgray;
-    background: white;
-    width: 100%;
-    height: 25em;
-    border-radius: 5px;
-    padding: 2.5%;
-    display: none;
-    float: left;
-    text-align: center;
-}
-
-.border-box-bottom {
-    background: lightgray;
-    width: 100%;
-    height: 4.5em;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 0 0 5px 5px;
+﻿.message-box {
+    overflow: auto;
     display: flex;
-    flex-direction: row;
-}
-
-input {
+    flex-direction: column-reverse;
+    max-height: 10em;
     width: 100%;
-    margin-bottom: 3%;
+    border: 1px solid lightgray;
+    padding: 0.5em 1em 0.5em 1em;
+    margin-top: 1em;
+    border-radius: 0.5em 0 0 0.5em;
 }
 
-select {
-    width: 100%;
-    margin-bottom: 3%;
+.message {
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
 }
 
-.rooms-table {
-    margin-top: 5%
+.admin-button {
+    background: red;
+    border: 1px solid #db0000;
+    border-radius: 5px;
+    color: white;
+    width: 25%;
+    padding: 1%;
+    font-weight: bold;
+    float: right;
 }
+
+.admin-button:hover {
+        background: darkred;
+        border: 1px solid #db0000;
+    }

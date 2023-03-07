@@ -19,8 +19,8 @@ namespace WebDev.Controllers
 
         public IActionResult Index(int id)
         {
-            HttpContext.Session.SetInt32("LoggedIn", 1);
-            HttpContext.Session.SetInt32("UserID", 2);
+           //HttpContext.Session.SetInt32("LoggedIn", 1);
+           //HttpContext.Session.SetInt32("UserID", 2);
 
             GameRoom room = _context.GameRooms.Where(x => x.ID == id).FirstOrDefault();
 

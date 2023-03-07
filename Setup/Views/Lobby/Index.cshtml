@@ -1,20 +1,21 @@
 ﻿@model WebDev.Models.ViewModels.LobbyViewModel
 @inject IHttpContextAccessor Accessor
 
+<link rel="stylesheet" href="~/css/lobby.css" />
+
 <div class="mt-2">
-    <button id="connect">Connect</button>
-    <button id="ping" onclick="getPlayers()">Ping</button>
-    <button id="disconnect" onclick="disconnect()">Disconnect</button>
-    Lobby
-    @if (@Model.OwnerID == Accessor.HttpContext.Session.GetInt32("UserID"))
-    {
-        <div>
-            <button onclick="DeleteRoom()">Delete room</button>
-        </div>
-    }
+    <div class="message-box"></div>
+
     <table class="table">
         <tr>
-            <th>Gebruiker</th>
+            <th>
+                Gebruiker
+
+                @if (@Model.OwnerID == Accessor.HttpContext.Session.GetInt32("UserID"))
+                {
+                    <button class="admin-button" onclick="DeleteRoom()">Delete room</button>
+                }
+            </th>
         </tr>
     </table>
 </div>
@@ -36,34 +37,30 @@
             setTimeout(ping, 5000);
         }
     }
-    
-    async function DeleteRoom(){
+
+    $(window).on("unload", function () {
+        disconnect();
+    });
+
+    $(window).on("beforeunload", function () {
+       disconnect();
+    });
+
+    async function DeleteRoom() {
         try {
-            await connection.invoke("DeleteRoom", "@Model.AdminToken");
+            await connection.invoke("DeleteRoom", "@Model.AdminToken", "@Model.RoomID");
         }
         catch (err) {
             console.log(err);
-        }    
+        }
     }
-    
+
     async function getPlayers() {
         try {
             await connection.invoke("GetGroupUsers", @Model.RoomID);
         }
         catch (err) {
             console.log(err);
-            setTimeout(getPlayers, 5000);
-        }
-    }
-
-    async function ping() {
-        try {
-            console.log(1);
-            await connection.invoke("Ping", @Model.RoomID);
-        }
-        catch (err) {
-            console.log(err);
-            setTimeout(ping, 5000);
         }
     }
 
@@ -88,9 +85,9 @@
     connection.on("receiveAdminToken", function (message) {
         adminToken = message;
     });
-    
+
     connection.on("playerJoined", function (message) {
-        console.log(message);
+        $('.message-box').append("<div class='message'>" + message + "</div>");
     });
 
     connection.on("playerList", function (message) {
@@ -98,20 +95,20 @@
         var message = JSON.parse(message);
         var html = '';
 
-        for(var i = 0; i < message.length; i++)
-                    html += '<tr><td>' + message[i] + '</td></tr>';
+        for (var i = 0; i < message.length; i++)
+            html += '<tr><td>' + message[i] + '</td></tr>';
 
         $('.table tr').first().after(html);
 
-        console.log(message);
-       // setTimeout(getPlayers, 500);
-    });
-    
-    connection.on("playerLeft", function (message) {
-        console.log(message);
+        setTimeout(getPlayers, 1000);
     });
 
-    connection.on("PingReturn", function (message) {
-        console.log(message);
+    connection.on("playerLeft", function (message) {
+        $('.message-box').append("<div class='message'>" + message + "</div>");
+    });
+
+    connection.on("removeAll", function (message) {
+        alert("Owner has disconnected. You will be returned to the overview.");
+        window.location.href = '/Home/LobbyOverview/'; 
     });
 </script>

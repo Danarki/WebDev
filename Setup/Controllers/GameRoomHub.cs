@@ -9,39 +9,21 @@ namespace WebDev.Controllers
 {
     public class GameRoomHub : Hub
     {
-        public int? userId { get; set; }
-        public override Task OnConnectedAsync()
+        public async Task DeleteRoom(string token, string groupID)
         {
-            //using (var db = new WebAppContext())
-            //{
-            //    var context = Context.GetHttpContext();
-            //    var i = context.Session.GetInt32("UserID"); ;
-            //    var user = db.Users
-            //        .Include(u => u.Rooms)
-            //        .SingleOrDefault(u => u.ID == i);
+            using (var db = new WebAppContext())
+            {
+                var roomBuilder = db.GameRooms.Where(x => x.OwnerToken == token);
 
-            //            //    if (user != null)
-            //    {
-            //        foreach (GameRoom room in user.Rooms)
-            //        {
-            //            Groups.AddToGroupAsync(Context.ConnectionId, room.Name);
-            //        }
-            //    }
-            //}
+                if (roomBuilder.Any())
+                {
+                    db.GameRooms.Remove(roomBuilder.First());
 
-            //playerJoined();
+                    db.SaveChanges();
 
-            return base.OnConnectedAsync();
-        }
-
-        public async Task DeleteRoom(string token)
-        {
-
-        }
-
-        public async Task Ping(int groupID)
-        {
-            await Clients.Group(groupID.ToString()).SendAsync("PingReturn", "pong");
+                    await Clients.Group(groupID).SendAsync("removeAll");
+                }
+            }
         }
 
         public async Task GetGroupUsers(int groupID)
@@ -63,7 +45,7 @@ namespace WebDev.Controllers
                             userNames.Add(username.Username);
                         }
                     }
-                    
+
                     string json = JsonConvert.SerializeObject(userNames);
                     await Clients.Group(groupID.ToString()).SendAsync("playerList", json);
                 }
@@ -107,19 +89,19 @@ namespace WebDev.Controllers
                         {
                             db.ConnectedUsers.Add(c);
                             db.SaveChanges();
+
+                            Groups.AddToGroupAsync(Context.ConnectionId, roomID.ToString());
+
+                            playerJoined(user.Username, roomID.ToString());
+
+                            GetGroupUsers(roomID);
                         }
-
-                        Groups.AddToGroupAsync(Context.ConnectionId, roomID.ToString());
-
-                        playerJoined(user.Username, roomID.ToString());
-
-                        GetGroupUsers(roomID);
                     }
                 }
             }
         }
 
-        public void RemoveFromRoom(int roomID)
+        public async void RemoveFromRoom(int roomID)
         {
             HttpContext context = new HttpContextAccessor().HttpContext;
 
@@ -151,14 +133,32 @@ namespace WebDev.Controllers
                             );
 
                             db.SaveChanges();
+
+                            Groups.RemoveFromGroupAsync(Context.ConnectionId, roomID.ToString());
+
+                            playerLeft(user.Username, roomID.ToString());
                         }
 
-                        Groups.RemoveFromGroupAsync(Context.ConnectionId, roomID.ToString());
-
-                        playerLeft(user.Username, roomID.ToString());
+                        await CheckEmptyRoom(roomID);
                     }
+                }
+            }
+        }
+
+        public async Task CheckEmptyRoom(int roomID)
+        {
+            using (var db = new WebAppContext())
+            {
+                var connectionsBuilder = db.ConnectedUsers.Where(x => x.RoomID == roomID);
+
+                if (!connectionsBuilder.Any())
+                {
+                    string roomToken = db.GameRooms.Where(x => x.ID == roomID).First().OwnerToken;
+                    await DeleteRoom(roomToken, roomID.ToString());
                 }
             }
         }
     }
 }
+
+
