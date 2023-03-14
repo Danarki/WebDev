@@ -66,7 +66,7 @@ app.MapHub<GameRoomHub>("/signalr");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=User}/{action=Index}/{id?}");
-    //pattern: "{controller=Lobby}/{action=Index}/{id?}");
+    //pattern: "{controller=User}/{action=Index}/{id?}");
+    pattern: "{controller=Lobby}/{action=Game}/{id?}");
 
 app.Run();

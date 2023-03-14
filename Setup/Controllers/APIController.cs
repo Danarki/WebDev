@@ -23,9 +23,9 @@ namespace WebDev.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendContact(string? subject = null, string? message = null, string? email = null)
         {
-
             ContactForm contactForm = new ContactForm();
             contactForm.Subject = subject;
             contactForm.Message = message;
@@ -62,6 +62,7 @@ namespace WebDev.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateRoom(string lobbyName, int gameId, int ownerId)
         {
             GameRoom room = new GameRoom();
@@ -83,6 +84,7 @@ namespace WebDev.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteRoom(int roomID)
         {
             GameRoom gameRoom = _context.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();

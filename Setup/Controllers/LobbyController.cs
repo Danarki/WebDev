@@ -17,6 +17,11 @@ namespace WebDev.Controllers
             _context = context;
         }
 
+        public IActionResult Game(int id)
+        {
+            return View();
+        }
+
         public IActionResult Index(int id)
         {
            //HttpContext.Session.SetInt32("LoggedIn", 1);

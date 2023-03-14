@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="~/css/contact.css" />
 
 <div class="form-box">
-    <form action="SendContact" method="post" id="contact-form">
+    <form action="SendContact" method="post" id="contact-form" asp-antiforgery="true">
         <label for="subject">Subject</label>
         <input id="subject" type="text" name="subject" maxlength="200" required />
 
@@ -37,21 +37,26 @@
         if (givenSolution != @ViewData["captcha-solution"]) {
             alert('Captcha is incorrect!');
         } else {
-                let url = '/api/SendContact?';
-                let message, subject, email;
-                
-                message = document.getElementById('message').value;
-                subject = document.getElementById('subject').value;
-                email = document.getElementById('email').value;
-                let parameterFormat = 
-                'message=' + message 
+            let url = '/api/SendContact?';
+            let message, subject, email, token;
+
+            token = $('input[name="__RequestVerificationToken"]').val();
+
+            message = document.getElementById('message').value;
+            subject = document.getElementById('subject').value;
+            email = document.getElementById('email').value;
+
+            let parameterFormat =
+                'message=' + message
                 + '&subject=' + subject
                 + '&email=' + email;
 
             $.ajax({
                 type: "POST",
                 url: url + parameterFormat,
-
+                data: {
+                    __RequestVerificationToken: token
+                },
                 contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                 async: true,
                 success: function (msg) {

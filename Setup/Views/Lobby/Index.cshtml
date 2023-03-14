@@ -87,7 +87,7 @@
     });
 
     connection.on("playerJoined", function (message) {
-        $('.message-box').append("<div class='message'>" + message + "</div>");
+        $('.message-box').append("<div class='message'>" + message + " joined the room </div>");
     });
 
     connection.on("playerList", function (message) {
@@ -104,7 +104,7 @@
     });
 
     connection.on("playerLeft", function (message) {
-        $('.message-box').append("<div class='message'>" + message + "</div>");
+        $('.message-box').append("<div class='message'>" + message + " left the room </div>");
     });
 
     connection.on("removeAll", function (message) {

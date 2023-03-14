@@ -1,0 +1,69 @@
+﻿<link rel="stylesheet" href="~/css/game.css"></link>
+<div class="lobby-screen">
+    <header class="options-topbar">
+        <button class="leaderboard-button">Show leaderboard</button>
+        <button class="leave-button">Leave Room</button>
+
+    </header>
+
+    <sidebar class="player-sidebar">
+        <div class="player-score-section">
+            <div class="player-score-section-title">Donald</div>
+            <div class="player-score-section-cards">
+                <div class="card">
+                    <div class="card-top">6</div>
+                    <div class="card-bottom">6</div>
+                </div>
+                <div class="card">
+                    <div class="card-top">10</div>
+                    <div class="card-bottom">10</div>
+                </div>
+            </div>
+            <div class="player-score-section-score">Score: Blackjack</div>
+        </div>
+        <div class="player-score-section">
+            <div class="player-score-section-title">Donald</div>
+            <div class="player-score-section-cards">
+                <div class="card-overlay overlay"><div class="card-top">10</div><div class="card-bottom">10</div></div>
+                <div class="card-overlay overlay"><div class="card-top">2</div><div class="card-bottom">10</div></div>
+                <div class="card-overlay overlay"><div class="card-top">3</div><div class="card-bottom">10</div></div>
+                <div class="card-overlay overlay"><div class="card-top">4</div><div class="card-bottom">10</div></div>
+                <div class="card-overlay overlay"><div class="card-top">5</div><div class="card-bottom">10</div></div>
+            </div>
+            <div class="player-score-section-score">Score: Blackjack</div>
+        </div>
+        <div class="player-score-section"></div>
+        <div class="player-score-section"></div>
+        <div class="player-score-section"></div>
+        <div class="player-score-section"></div>
+    </sidebar>
+
+    <section class="game-section">
+    </section>
+
+    <footer class="action-footer">
+        <button class="stand-button">Stand</button>
+        <button class="hit-button">Hit</button>
+    </footer>
+</div>
+
+<script>
+    const coll = document.getElementsByClassName("overlay");
+        console.log(coll);
+
+    for (var i = 0; i < coll.length; i++) {
+        let identifier = 1;
+        if (coll.length > 4) {
+            identifier += (coll.length - 4) * 0.35;
+        }
+
+
+        coll[i].style.marginTop = (i * 0.75) / identifier + "%";
+        coll[i].style.marginLeft = (i * 4) / identifier + 1 + "%";
+
+        coll[i].style.height = ((identifier * 0.1) + 8) + "%";
+        coll[i].style.width = ((identifier * 0.25) + 10) + "%";
+        
+        coll[i].childNodes[1].style.marginTop = ((identifier * 5) + 70) + "%";
+    }
+</script>

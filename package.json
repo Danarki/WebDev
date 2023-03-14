@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Danarki/WebDev#readme",
   "dependencies": {
-    "@microsoft/signalr": "^7.0.3"
+    "@microsoft/signalr": "^7.0.3",
+    "dompurify": "^3.0.1"
   }
 }

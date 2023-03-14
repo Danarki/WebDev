@@ -26,6 +26,11 @@ namespace WebDev.Controllers
             }
         }
 
+        public string EncodeString(string str)
+        {
+            return System.Web.HttpUtility.HtmlEncode(str);
+        }
+        
         public async Task GetGroupUsers(int groupID)
         {
             using (var db = new WebAppContext())
@@ -42,7 +47,7 @@ namespace WebDev.Controllers
 
                         if (username != null)
                         {
-                            userNames.Add(username.Username);
+                            userNames.Add(EncodeString(username.Username));
                         }
                     }
 
@@ -54,12 +59,12 @@ namespace WebDev.Controllers
 
         public async Task playerJoined(string playerName, string groupID)
         {
-            await Clients.Group(groupID).SendAsync("playerJoined", playerName + " joined the room");
+            await Clients.Group(groupID).SendAsync("playerJoined", EncodeString(playerName));
         }
 
         public async Task playerLeft(string playerName, string groupID)
         {
-            await Clients.Group(groupID).SendAsync("playerLeft", playerName + " left the room");
+            await Clients.Group(groupID).SendAsync("playerLeft", EncodeString(playerName));
         }
 
         public void AddToRoom(int roomID)

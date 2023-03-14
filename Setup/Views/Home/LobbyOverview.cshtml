@@ -6,7 +6,7 @@
 <div class="lobby-container">
     <div class="pop-up">
         <h1>Create a lobby</h1>
-        <form action="CreateRoom" method="post" id="create-room-form">
+        <form action="CreateRoom" method="post" id="create-room-form" asp-antiforgery="true">
             <label for="lobby-name">Lobby name</label>
             <input id="lobby-name" type="text" name="lobbyname" maxlength="32" required />
 
@@ -73,9 +73,10 @@
     $("#create-room-form").submit(function (e) {
         e.preventDefault();
 
-
         let url = '/api/CreateRoom?';
-        let gameId, lobbyName;
+        let gameId, lobbyName, token;
+
+        token = $('input[name="__RequestVerificationToken"]').val();
 
         gameId = document.getElementById('game').value;
         lobbyName = document.getElementById('lobby-name').value;
@@ -88,7 +89,9 @@
         $.ajax({
             type: "POST",
             url: url + parameterFormat,
-
+            data: {
+                __RequestVerificationToken: token
+            },
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             async: true,
             success: function (msg) {

@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\css\\contact.css"
     },
     {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\game.css",
+      "PackagePath": "staticwebassets\\css\\game.css"
+    },
+    {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\lobby-overview.css",
       "PackagePath": "staticwebassets\\css\\lobby-overview.css"
     },

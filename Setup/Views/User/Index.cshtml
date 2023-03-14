@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
 
 <div class="login-box">
-    <form id="login-form" asp-controller="User" asp-action="Login" method="post">
+    <form id="login-form" asp-controller="User" asp-action="Login" method="post" asp-antiforgery="true">
         <label for="email">Email*</label>
         <input name="email" type="email" required/>
 
@@ -16,13 +16,13 @@
         <a id="register-switch">Don't have an account?</a>
     </form>
     
-    <form id="register-form" class="visually-hidden" asp-controller="User" asp-action="Register" method="post">
+    <form id="register-form" class="visually-hidden" asp-controller="User" asp-action="Register" method="post" asp-antiforgery="true">
         <label for="email">Email*</label>
         <input name="email" type="email" required/>
 
         <label for="password">Password*</label>
-        <label for="password" class="passwordLabel">Must contain: 1 Uppercase, 1 lowercase, 1 number and 1 special character</label>
-        <input name="password" id="password" type="password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"/>
+        <label for="password" class="passwordLabel">Must contain: 1 Uppercase, 1 lowercase, 1 number and 1 special character and be at least 16 characters long</label>
+        <input name="password" id="password" type="password" required pattern="(?=[A-Za-z0-9#$%^&amp;+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[#$%^&amp;+!=])(?=.{16,}).*$"/>
 
         <label for="password-confirmation">Password Confirmation*</label>
         <input name="passwordConfirmation" id="password-confirmation" type="password" minlength="8" required/>
