@@ -18,6 +18,11 @@ namespace WebDev
         public DbSet<GameRoom> GameRooms { get; set; }
         public DbSet<GameType> GameTypes { get; set; }
         public DbSet<ConnectedUser> ConnectedUsers { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<GameScore> GameScores { get; set; }
+        public DbSet<Dealer> Dealers { get; set; }
+        public DbSet<CardHand> CardHands { get; set; }
+        public DbSet<DeckCards> DeckCards { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -22,19 +22,26 @@ namespace WebDev.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GameRoomUser", b =>
+            modelBuilder.Entity("WebDev.Models.CardHand", b =>
                 {
-                    b.Property<int>("RoomsID")
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("UsersID")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("CardID")
                         .HasColumnType("int");
 
-                    b.HasKey("RoomsID", "UsersID");
+                    b.Property<int>("OwnerID")
+                        .HasColumnType("int");
 
-                    b.HasIndex("UsersID");
+                    b.Property<bool>("OwnerIsDealer")
+                        .HasColumnType("bit");
 
-                    b.ToTable("GameRoomUser");
+                    b.HasKey("ID");
+
+                    b.ToTable("CardHands");
                 });
 
             modelBuilder.Entity("WebDev.Models.ConnectedUser", b =>
@@ -45,6 +52,16 @@ namespace WebDev.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<string>("AuthToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
                     b.Property<int>("RoomID")
                         .HasColumnType("int");
 
@@ -54,28 +71,6 @@ namespace WebDev.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("ConnectedUsers", (string)null);
-                });
-
-            modelBuilder.Entity("WebDev.Models.Connection", b =>
-                {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsConnected")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserAgent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("Connection");
                 });
 
             modelBuilder.Entity("WebDev.Models.ContactForm", b =>
@@ -105,6 +100,66 @@ namespace WebDev.Migrations
                     b.ToTable("ContactForm", (string)null);
                 });
 
+            modelBuilder.Entity("WebDev.Models.Dealer", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Dealers");
+                });
+
+            modelBuilder.Entity("WebDev.Models.DeckCards", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("InUse")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Rank")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("DeckCards");
+                });
+
+            modelBuilder.Entity("WebDev.Models.Game", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("GameID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("game");
+                });
+
             modelBuilder.Entity("WebDev.Models.GameRoom", b =>
                 {
                     b.Property<int>("ID")
@@ -129,9 +184,29 @@ namespace WebDev.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("GameID");
-
                     b.ToTable("GameRoom", (string)null);
+                });
+
+            modelBuilder.Entity("WebDev.Models.GameScore", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("GameID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("gamescore");
                 });
 
             modelBuilder.Entity("WebDev.Models.GameType", b =>
@@ -143,6 +218,9 @@ namespace WebDev.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<int>("MaxPlayers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxScore")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -189,44 +267,6 @@ namespace WebDev.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("GameRoomUser", b =>
-                {
-                    b.HasOne("WebDev.Models.GameRoom", null)
-                        .WithMany()
-                        .HasForeignKey("RoomsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebDev.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WebDev.Models.Connection", b =>
-                {
-                    b.HasOne("WebDev.Models.User", null)
-                        .WithMany("Connections")
-                        .HasForeignKey("UserID");
-                });
-
-            modelBuilder.Entity("WebDev.Models.GameRoom", b =>
-                {
-                    b.HasOne("WebDev.Models.GameType", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
-            modelBuilder.Entity("WebDev.Models.User", b =>
-                {
-                    b.Navigation("Connections");
                 });
 #pragma warning restore 612, 618
         }

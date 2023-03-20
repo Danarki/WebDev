@@ -63,6 +63,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapHub<GameRoomHub>("/signalr");
+app.MapHub<GameHub>("/game");
 
 app.MapControllerRoute(
     name: "default",

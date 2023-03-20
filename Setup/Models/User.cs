@@ -27,10 +27,6 @@ namespace WebDev.Models
 
         public string? PasswordToken { get; set; }
 
-        public ICollection<Connection> Connections { get; set; }
-
-        public virtual ICollection<GameRoom> Rooms { get; set; }
-
         public void Insert(WebAppContext context)
         {
             context.Users.Add(this);

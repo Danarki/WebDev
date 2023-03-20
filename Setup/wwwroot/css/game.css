@@ -47,7 +47,7 @@
 
 .leave-button {
     width: 35%;
-    height: 4.5%;
+    height: 4%;
     background: #f20202;
     border: 1px solid #b80202;
     border-radius: 5px;
@@ -66,7 +66,7 @@
 
 .leaderboard-button {
     width: 37.5%;
-    height: 4.5%;
+    height: 4%;
     background: #0027a8;
     border: 1px solid #0027a8;
     border-radius: 5px;
@@ -112,7 +112,7 @@
 .card {
     border: 1px solid black;
     width: 40%;
-    height: 80%;
+    height: 85%;
     margin: 5%;
     border-radius: 7.5%;
 }
@@ -133,8 +133,10 @@
 
 .card-bottom {
     font-weight: bold;
-    margin-top: 60%;
-    margin-right: 10%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-right: 5%;
     transform: rotate(180deg);
 }
 
@@ -158,6 +160,44 @@
     height: 84.5%;
     margin-top: 11%;
     margin-left: 25.5%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dealer-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+}
+
+.dealer-card-section {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex: 3;
+}
+
+.rule-section {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 125%;
+    flex: 1;
+}
+
+.player-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+}
+
+.player-card-section {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex: 3;
 }
 
 .lobby-screen {
@@ -165,4 +205,84 @@
     width: 100%;
     height: 100%;
     background: #35654d;
+}
+
+.big-card {
+    height: 70%;
+    width: 40%;
+    margin: 5%;
+    border: 0.5px solid black;
+    border-radius: 5%;
+    background: white;
+    position: relative
+}
+
+.big-card-overlay {
+    height: 70%;
+    width: 40%;
+    margin: 5%;
+    border: 0.5px solid black;
+    border-radius: 5%;
+    background: white;
+    position: absolute
+}
+
+.big-card-top {
+    padding-left: 5%;
+    font-weight: bold;
+    font-size: 150%;
+}
+
+.big-card-bottom {
+    font-weight: bold;
+    font-size: 150%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-right: 5%;
+    transform: rotate(180deg);
+}
+
+.closed-card-middle {
+    background: repeating-linear-gradient( 45deg, red, red 10px, darkred 10px, darkred 15px );
+    width: 85%;
+    height: 92.5%;
+    margin: 7.5%;
+    border-radius: 5%;
+    border: 0.5px solid black;
+}
+
+.dealer-card-score-section {
+    position: relative;
+    min-width: 15%;
+    width: auto;
+    height: 7.5%;
+    background: gray;
+    color: white;
+    font-weight: bold;
+    border-radius: 15%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.player-card-score-section {
+    position: relative;
+    min-width: 15%;
+    width: auto;
+    height: 7.5%;
+    padding: 0 1% 0 1%;
+    background: gray;
+    color: white;
+    font-weight: bold;
+    border-radius: 15%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.red {
+    color: red;
+}
+
+.black {
+    color: black;
 }

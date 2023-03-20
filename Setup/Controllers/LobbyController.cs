@@ -17,9 +17,36 @@ namespace WebDev.Controllers
             _context = context;
         }
 
+        public void EnableAllPlayers(int GameID)
+        {
+            using (var db = new WebAppContext())
+            {
+                List<ConnectedUser> user = db.ConnectedUsers.Where(x => x.GameID == GameID).ToList();
+
+                foreach (ConnectedUser cu in user)
+                {
+                    cu.IsDisabled = false;
+                }
+
+                db.SaveChanges();
+            }
+        }
+
         public IActionResult Game(int id)
         {
-            return View();
+            HttpContext.Session.SetInt32("UserID", 2);
+
+            EnableAllPlayers(id);
+
+            GameViewModel gameViewModel = new GameViewModel();
+
+            gameViewModel.UserID = (int)HttpContext.Session.GetInt32("UserID");
+
+            gameViewModel.LobbyID = id;
+
+            gameViewModel.UserToken = "ABC";
+
+            return View(gameViewModel);
         }
 
         public IActionResult Index(int id)

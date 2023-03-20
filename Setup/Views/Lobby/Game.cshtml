@@ -1,9 +1,12 @@
-﻿<link rel="stylesheet" href="~/css/game.css"></link>
+﻿@model WebDev.Models.ViewModels.GameViewModel
+@inject IHttpContextAccessor Accessor
+
+<link rel="stylesheet" href="~/css/game.css"></link>
+
 <div class="lobby-screen">
     <header class="options-topbar">
         <button class="leaderboard-button">Show leaderboard</button>
         <button class="leave-button">Leave Room</button>
-
     </header>
 
     <sidebar class="player-sidebar">
@@ -39,6 +42,21 @@
     </sidebar>
 
     <section class="game-section">
+        <section class="dealer-section">
+            <section class="dealer-card-section" id="dealer-card-section"></section>
+            <section class="dealer-card-score-section"></section>
+        </section>
+
+        <section class="rule-section">
+            Winning awards 1 point<br />
+            Blackjack awards 3 points<br />
+            Losing takes 1 point
+        </section>
+
+        <section class="player-section">
+            <section class="player-card-score-section"></section>
+            <section class="player-card-section" id="player-card-section"></section>
+        </section>
     </section>
 
     <footer class="action-footer">
@@ -47,23 +65,155 @@
     </footer>
 </div>
 
+<script src="~/js/game.js"></script>
 <script>
-    const coll = document.getElementsByClassName("overlay");
-        console.log(coll);
+    "use strict";
+    let cardAmount = 0;
+    let dealerCardAmount = 0;
 
-    for (var i = 0; i < coll.length; i++) {
-        let identifier = 1;
-        if (coll.length > 4) {
-            identifier += (coll.length - 4) * 0.35;
+    var connection = new signalR.HubConnectionBuilder().withUrl('/game').build();
+
+    function renderDealerGameCards() {
+        const dealerCardCollection = document.getElementById("dealer-card-section").children;
+
+
+        for (var i = 0; i < dealerCardCollection.length; i++) {
+            let identifier = 1;
+
+            dealerCardCollection[i].style.marginTop = (i * 3) / identifier + 10 + "%";
+            dealerCardCollection[i].style.marginLeft = (i * 10) / identifier + 5 + "%";
+        }
+    }
+
+    function renderPlayerGameCards() {
+
+        const playerCardCollection = document.getElementById("player-card-section").children;
+
+        for (var i = 0; i < playerCardCollection.length; i++) {
+            let identifier = 1;
+
+            playerCardCollection[i].style.marginTop = (i * 3) / identifier + 10 + "%";
+            playerCardCollection[i].style.marginLeft = (i * 10) / identifier + 5 + "%";
+        }
+    }
+
+    function renderSidebarCards() {
+        const cardCollection = document.getElementsByClassName("overlay");
+
+        for (var i = 0; i < cardCollection.length; i++) {
+            let identifier = 1;
+            if (cardCollection.length > 4) {
+                identifier += (cardCollection.length - 4) * 0.35;
+            }
+
+            cardCollection[i].style.marginTop = (i * 0.75) / identifier + "%";
+            cardCollection[i].style.marginLeft = (i * 4) / identifier + 1 + "%";
+
+            cardCollection[i].style.height = ((identifier * 0.1) + 8) + "%";
+            cardCollection[i].style.width = ((identifier * 0.25) + 10) + "%";
+
+            cardCollection[i].childNodes[1].style.marginTop = ((identifier * 5) + 70) + "%";
+        }
+    }
+
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+            connection.invoke("startRound", "1");
+
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 500);
+        }
+    };
+
+    function getCardHTML(symbol, rank) {
+        var label = rank;
+        var color;
+        switch (symbol) {
+            case "Diamonds":
+                label += '♦️';
+                color = 'red';
+                break;
+            case "Hearts":
+                label += '♥️';
+                color = 'red';
+                break;
+            case "Clubs":
+                label += '♣️';
+                color = 'black';
+                break;
+            case "Spades":
+                label += '♠️';
+                color = 'black';
+                break;
         }
 
-
-        coll[i].style.marginTop = (i * 0.75) / identifier + "%";
-        coll[i].style.marginLeft = (i * 4) / identifier + 1 + "%";
-
-        coll[i].style.height = ((identifier * 0.1) + 8) + "%";
-        coll[i].style.width = ((identifier * 0.25) + 10) + "%";
-        
-        coll[i].childNodes[1].style.marginTop = ((identifier * 5) + 70) + "%";
+        return '<div class="big-card ' + color + ' open-card"><div class="big-card-top">' + label + '</div><div class="big-card-bottom">' + label + '</div></div>';
     }
+
+    connection.on("dealerCardReceived", function (message) {
+        dealerCardAmount++;
+
+        var parsedMessage = JSON.parse(message);
+
+        $('.dealer-card-section').append(getCardHTML(parsedMessage.Symbol, parsedMessage.Rank));
+
+        if (dealerCardAmount == 1) {
+            $('.dealer-card-section').append('<div class="big-card closed-card"><div class="closed-card-middle"></div></div>')
+        }
+
+        if (dealerCardAmount == 2) {
+            $('.closed-card').remove();
+        }
+
+        if (dealerCardAmount > 2) {
+            var all = document.getElementById('dealer-card-section').children;
+            for (let i = 0; i < all.length; i++) {
+                all[i].classList.add("big-card-overlay");
+            }
+
+            renderDealerGameCards();
+        }
+    });
+
+    connection.on("playerCardReceived", function (message) {
+        cardAmount++;
+
+        var parsedMessage = JSON.parse(message);
+
+        $('.player-card-section').append(getCardHTML(parsedMessage.Symbol, parsedMessage.Rank));
+
+        console.log(cardAmount);
+
+        if (cardAmount > 2) {
+            var all = document.getElementById('player-card-section').children;
+
+            for (let i = 0; i < all.length; i++) {
+                all[i].classList.add("big-card-overlay");
+            }
+
+            renderPlayerGameCards();
+        }
+    });
+
+    connection.on("cardReceived", function (message) {
+        cardAmount++;
+
+    });
+
+    connection.on("dealerScoreReceived", function (message) {
+        $('.dealer-card-score-section').html(message);
+    });
+
+    connection.on("playerScoreReceived", function (message) {
+        $('.player-card-score-section').html(message);
+    });
+
+    start();
+
+    $('.hit-button').on('click', function () {
+        connection.invoke('playerHit', '@Model.LobbyID', '@Model.UserID', '@Model.UserToken');
+    });
 </script>

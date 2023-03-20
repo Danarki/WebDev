@@ -1,16 +1,26 @@
-﻿using Microsoft.Build.Framework;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Build.Framework;
 
 namespace WebDev.Models
 {
+    [Table("connecteduser")]
     public class ConnectedUser
     {
         public int ID { get; set; }
 
-        [Required]
+        [AllowNull]
         public int RoomID { get; set; }
 
         [Required]
         public int UserID { get; set; }
+
+        [AllowNull]
+        public int GameID { get; set; }
+
+        public string AuthToken { get; set; }
+
+        public bool IsDisabled { get; set; }
 
         public void Insert(WebAppContext context)
         {

@@ -1,7 +1,4 @@
-﻿using System.Data.Entity;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using WebDev.Models;
 

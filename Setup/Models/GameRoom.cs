@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using WebDev.Controllers;
 
 namespace WebDev.Models
 {
+    [Table("gameroom")]
     public class GameRoom
     {
         public int ID { get; set; }
@@ -11,7 +13,6 @@ namespace WebDev.Models
         public string Name { get; set; }
 
         [Required]
-        public GameType Game { get; set; }
         public int GameID { get; set; }
 
         [Required]
@@ -19,8 +20,6 @@ namespace WebDev.Models
 
         [Required]
         public string OwnerToken { get; set; }
-
-        public virtual ICollection<User> Users { get; set; }
 
         public void Insert(WebAppContext context)
         {
