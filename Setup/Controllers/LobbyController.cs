@@ -19,7 +19,7 @@ namespace WebDev.Controllers
 
         public void EnableAllPlayers(int GameID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
                 List<ConnectedUser> user = db.ConnectedUsers.Where(x => x.GameID == GameID).ToList();
 

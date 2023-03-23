@@ -14,6 +14,7 @@
         <input type="submit" value="Login"/>
         
         <a id="register-switch">Don't have an account?</a>
+        <a id="password-switch">Forgot password?</a>
     </form>
     
     <form id="register-form" class="visually-hidden" asp-controller="User" asp-action="Register" method="post" asp-antiforgery="true">
@@ -34,6 +35,15 @@
         
         <a id="login-switch">Already registered?</a>
     </form>
+    
+    <form id="password-form" class="visually-hidden" asp-controller="User" asp-action="ForgotPassword" method="post" asp-antiforgery="true">
+        <label for="email">Email*</label>
+        <input name="email" type="email" required />
+        
+        <input type="submit" value="Reset password"/>
+        
+        <a id="back-to-login-switch">Remember your password?</a>
+    </form>
 </div>
 
 <script>
@@ -42,8 +52,20 @@
         $('#register-form').removeClass("visually-hidden");
     });
     
+    $('#password-switch').click(function () {
+        $('#password-form').removeClass("visually-hidden");
+        $('#login-form').addClass("visually-hidden");
+    });
+    
     $('#login-switch').click(function () {
         $('#register-form').addClass("visually-hidden");
+        $('#password-form').addClass("visually-hidden");
+        $('#login-form').removeClass("visually-hidden");
+    });
+
+    $('#back-to-login-switch').click(function () {
+        $('#register-form').addClass("visually-hidden");
+        $('#password-form').addClass("visually-hidden");
         $('#login-form').removeClass("visually-hidden");
     });
     

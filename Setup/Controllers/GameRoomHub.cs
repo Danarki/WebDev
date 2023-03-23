@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 using WebDev.Models;
 
 namespace WebDev.Controllers
@@ -8,9 +10,9 @@ namespace WebDev.Controllers
     {
         public async Task DeleteRoom(string token, string groupID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                var roomBuilder = db.GameRooms.Where(x => x.OwnerToken == token);
+                IQueryable<GameRoom> roomBuilder = db.GameRooms.Where(x => x.OwnerToken == token);
 
                 if (roomBuilder.Any())
                 {
@@ -19,6 +21,20 @@ namespace WebDev.Controllers
                     db.SaveChanges();
 
                     await Clients.Group(groupID).SendAsync("removeAll");
+                }
+                else
+                {
+                    LogItem logItem = new LogItem();
+
+                    logItem.Message = "Access-control failed for Room Deletion";
+                    logItem.TimeOfOccurence = DateTime.Now;
+                    logItem.Source = "GameRoomHub";
+                    logItem.Type = "CreateRoom";
+                    logItem.IsError = true;
+
+                    db.LogItem.Add(logItem);
+
+                    db.SaveChanges();
                 }
             }
         }
@@ -30,17 +46,17 @@ namespace WebDev.Controllers
         
         public async Task GetGroupUsers(int groupID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                var connections = db.ConnectedUsers.Where(x => x.RoomID.ToString() == groupID.ToString()).ToList();
+                List<ConnectedUser>? connections = db.ConnectedUsers.Where(x => x.RoomID.ToString() == groupID.ToString()).ToList();
 
                 if (connections != null)
                 {
                     List<string> userNames = new List<string>();
 
-                    foreach (var connection in connections)
+                    foreach (ConnectedUser connection in connections)
                     {
-                        var username = db.Users.Where(x => x.ID == connection.UserID).FirstOrDefault();
+                        User? username = db.Users.Where(x => x.ID == connection.UserID).FirstOrDefault();
 
                         if (username != null)
                         {
@@ -48,7 +64,12 @@ namespace WebDev.Controllers
                         }
                     }
 
-                    string json = JsonConvert.SerializeObject(userNames);
+                    JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+
+                    serializerSettings.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
+
+                    string json = JsonConvert.SerializeObject(userNames, serializerSettings);
+
                     await Clients.Group(groupID.ToString()).SendAsync("playerList", json);
                 }
             }
@@ -68,13 +89,13 @@ namespace WebDev.Controllers
         {
             HttpContext context = new HttpContextAccessor().HttpContext;
 
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                var room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
+                GameRoom? room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
 
                 if (room != null)
                 {
-                    var userId = context.Session.GetInt32("UserID");
+                    int? userId = context.Session.GetInt32("UserID");
 
                     User user = db.Users.Where(x => x.ID == userId).FirstOrDefault();
 
@@ -84,7 +105,7 @@ namespace WebDev.Controllers
                         c.RoomID = roomID;
                         c.UserID = (int)userId;
 
-                        var connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
+                        ConnectedUser? connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
                             .FirstOrDefault();
 
                         if (connectedCheck == null)
@@ -107,13 +128,13 @@ namespace WebDev.Controllers
         {
             HttpContext context = new HttpContextAccessor().HttpContext;
 
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                var room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
+                GameRoom? room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
 
                 if (room != null)
                 {
-                    var userId = context.Session.GetInt32("UserID");
+                    int? userId = context.Session.GetInt32("UserID");
 
                     User user = db.Users.Where(x => x.ID == userId).FirstOrDefault();
 
@@ -123,7 +144,7 @@ namespace WebDev.Controllers
                         c.RoomID = roomID;
                         c.UserID = (int)userId;
 
-                        var connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
+                        ConnectedUser? connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
                             .FirstOrDefault();
 
                         if (connectedCheck != null)
@@ -149,9 +170,9 @@ namespace WebDev.Controllers
 
         public async Task CheckEmptyRoom(int roomID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                var connectionsBuilder = db.ConnectedUsers.Where(x => x.RoomID == roomID);
+                IQueryable<ConnectedUser> connectionsBuilder = db.ConnectedUsers.Where(x => x.RoomID == roomID);
 
                 if (!connectionsBuilder.Any())
                 {

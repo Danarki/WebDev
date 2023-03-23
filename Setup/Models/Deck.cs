@@ -24,9 +24,9 @@
         public void GenerateDeck()
         {
             DeckList = new List<Card>();
-            foreach (var symbol in (Symbol[])Enum.GetValues(typeof(Symbol)))
+            foreach (Symbol symbol in (Symbol[])Enum.GetValues(typeof(Symbol)))
             {
-                foreach (var rank in (Rank[])Enum.GetValues(typeof(Rank)))
+                foreach (Rank rank in (Rank[])Enum.GetValues(typeof(Rank)))
                 {
                     Card card = new Card();
 

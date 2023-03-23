@@ -9,18 +9,16 @@ namespace WebDev.Models
     {
         public int ID { get; set; }
 
-        [AllowNull]
-        public int RoomID { get; set; }
+        public int? RoomID { get; set; }
 
         [Required]
         public int UserID { get; set; }
 
-        [AllowNull]
-        public int GameID { get; set; }
+        public int? GameID { get; set; }
 
-        public string AuthToken { get; set; }
+        public string? AuthToken { get; set; }
 
-        public bool IsDisabled { get; set; }
+        public bool? IsDisabled { get; set; }
 
         public void Insert(WebAppContext context)
         {

@@ -10,6 +10,7 @@ namespace WebDev.Models
         public int ID { get; set; }
 
         [Required]
+        [StringLength(32)]
         public string Name { get; set; }
 
         [Required]

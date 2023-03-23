@@ -6,14 +6,19 @@ namespace WebDev.Controllers
 {
     public class MailController : Controller
     {
+        public static string EncodeString(string str)
+        {
+            return System.Web.HttpUtility.HtmlEncode(str);
+        }
+
         public static void SendEmail(string email, string subject, string body)
         {
             MailAddress from = new MailAddress("webdev@webdev.com");
             MailAddress to = new MailAddress(email);
 
             MailMessage mailMessage = new MailMessage(from, to);
-            mailMessage.Subject = subject;
-            mailMessage.Body = body;
+            mailMessage.Subject = EncodeString(subject);
+            mailMessage.Body = EncodeString(body);
 
             SmtpClient smtp = new SmtpClient();
             smtp.Host = "sandbox.smtp.mailtrap.io";

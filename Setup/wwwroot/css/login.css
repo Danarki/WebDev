@@ -24,6 +24,17 @@ input {
         color: blue;
     }
 
+#password-switch {
+    color: cornflowerblue;
+    text-decoration: underline;
+    cursor: pointer;
+    float: right;
+}
+
+    #password-switch:hover {
+        color: blue;
+    }
+
 #login-switch {
     color: cornflowerblue;
     text-decoration: underline;
@@ -31,6 +42,16 @@ input {
 }
 
     #login-switch:hover {
+        color: blue;
+    }
+
+#back-to-login-switch {
+    color: cornflowerblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+    #back-to-login-switch:hover {
         color: blue;
     }
 

@@ -15,13 +15,13 @@ namespace WebDev.Controllers
         {
             HttpContext context = new HttpContextAccessor().HttpContext;
 
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                var room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
+                GameRoom room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
 
                 if (room != null)
                 {
-                    var userId = context.Session.GetInt32("UserID");
+                    int? userId = context.Session.GetInt32("UserID");
 
                     User user = db.Users.Where(x => x.ID == userId).FirstOrDefault();
 
@@ -31,7 +31,7 @@ namespace WebDev.Controllers
                         c.RoomID = roomID;
                         c.UserID = (int)userId;
 
-                        var connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
+                        ConnectedUser? connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
                             .FirstOrDefault();
 
                         if (connectedCheck == null)
@@ -50,7 +50,7 @@ namespace WebDev.Controllers
 
         public void CreateGameDealer(string GameID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
                 Dealer dealer = new Dealer();
                 dealer.GameID = int.Parse(GameID);
@@ -62,11 +62,11 @@ namespace WebDev.Controllers
 
         public void GivePlayerCard(string gameID, int playerID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
                 ConnectedUser user = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID) && x.UserID == playerID).FirstOrDefault();
 
-                if (user != null && user.IsDisabled)
+                if (user != null && user.IsDisabled != null && (bool)user.IsDisabled)
                 {
                     return;
                 }
@@ -95,7 +95,7 @@ namespace WebDev.Controllers
 
                 db.SaveChanges();
 
-                var dh = db.CardHands.Where(x => x.OwnerID == playerID && !x.OwnerIsDealer).ToList();
+                List<CardHand> dh = db.CardHands.Where(x => x.OwnerID == playerID && !x.OwnerIsDealer).ToList();
                 List<DeckCards> cards = new List<DeckCards>();
                 foreach (CardHand hand in dh)
                 {
@@ -114,7 +114,7 @@ namespace WebDev.Controllers
 
         public void GiveDealerCard(string GameID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
                 DeckCards c = db.DeckCards.Where(x => x.GameID == int.Parse(GameID) && !x.InUse).FirstOrDefault();
                 c.InUse = true;
@@ -133,7 +133,7 @@ namespace WebDev.Controllers
 
                 db.SaveChanges();
 
-                var dh = db.CardHands.Where(x => x.OwnerID == d.ID && x.OwnerIsDealer).ToList();
+                List<CardHand> dh = db.CardHands.Where(x => x.OwnerID == d.ID && x.OwnerIsDealer).ToList();
                 List<DeckCards> cards = new List<DeckCards>();
                 foreach (CardHand hand in dh)
                 {
@@ -154,7 +154,7 @@ namespace WebDev.Controllers
         {
             if (playerID != null && gameID != null)
             {
-                using (var db = new WebAppContext())
+                using (WebAppContext db = new WebAppContext())
                 {
                     ConnectedUser connectedUser = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID) && x.UserID == playerID).FirstOrDefault();
 
@@ -171,7 +171,7 @@ namespace WebDev.Controllers
 
                     foreach (ConnectedUser user in allConnectedUsers)
                     {
-                        if (!user.IsDisabled)
+                        if (user.IsDisabled != null && (bool)user.IsDisabled)
                         {
                             userNotDisabled = true;
                         }
@@ -191,7 +191,8 @@ namespace WebDev.Controllers
             int score2 = 0;
             bool AceFound = false;
             bool SymbolFound = false;
-            foreach (var card in cards)
+
+            foreach (DeckCards card in cards)
             {
                 if (card.Rank == "A")
                 {
@@ -242,7 +243,7 @@ namespace WebDev.Controllers
                 {
                     if (playerID != null && gameID != null)
                     {
-                        using (var db = new WebAppContext())
+                        using (WebAppContext db = new WebAppContext())
                         {
                             ConnectedUser connectedUser = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID) && x.UserID == playerID).FirstOrDefault();
                             connectedUser.IsDisabled = true;
@@ -282,20 +283,20 @@ namespace WebDev.Controllers
             CreateGameDealer(GameID);
 
             GiveDealerCard(GameID);
-            
+
             GivePlayerCard(GameID, 2);
             GivePlayerCard(GameID, 2);
         }
 
         public async Task playerHit(string LobbyID, string PlayerID, string AuthToken)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
-                ConnectedUser connectedUser = db.ConnectedUsers.Where(x => 
+                ConnectedUser connectedUser = db.ConnectedUsers.Where(x =>
                     x.GameID == int.Parse(LobbyID) &&
-                    x.UserID == int.Parse(PlayerID) && 
-                    x.AuthToken == AuthToken && 
-                    !x.IsDisabled).FirstOrDefault();
+                    x.UserID == int.Parse(PlayerID) &&
+                    x.AuthToken == AuthToken &&
+                    !(bool)x.IsDisabled).FirstOrDefault();
                 if (connectedUser == null)
                 {
                     return;
@@ -307,7 +308,7 @@ namespace WebDev.Controllers
 
         public void EndRound(int GameID)
         {
-            using (var db = new WebAppContext())
+            using (WebAppContext db = new WebAppContext())
             {
                 Dealer dealer = db.Dealers.Where(x => x.GameID == GameID).FirstOrDefault();
 
@@ -321,7 +322,11 @@ namespace WebDev.Controllers
 
         public async Task SendPlayerCard(DeckCards card, string groupID)
         {
-            string json = JsonConvert.SerializeObject(card);
+            JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+            
+            serializerSettings.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
+
+            string json = JsonConvert.SerializeObject(card, serializerSettings);
 
             await Clients.Group(groupID).SendAsync("playerCardReceived", json);
         }
@@ -333,7 +338,11 @@ namespace WebDev.Controllers
 
         public async Task SendDealerCard(DeckCards card, string groupID)
         {
-            string json = JsonConvert.SerializeObject(card);
+            JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+
+            serializerSettings.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
+
+            string json = JsonConvert.SerializeObject(card, serializerSettings);
 
             await Clients.Group(groupID).SendAsync("dealerCardReceived", json);
         }

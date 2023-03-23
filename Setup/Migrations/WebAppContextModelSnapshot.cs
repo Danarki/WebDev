@@ -53,16 +53,15 @@ namespace WebDev.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("AuthToken")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GameID")
+                    b.Property<int?>("GameID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDisabled")
+                    b.Property<bool?>("IsDisabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RoomID")
+                    b.Property<int?>("RoomID")
                         .HasColumnType("int");
 
                     b.Property<int>("UserID")
@@ -233,6 +232,37 @@ namespace WebDev.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("GameTypes", (string)null);
+                });
+
+            modelBuilder.Entity("WebDev.Models.LogItem", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<bool>("IsError")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeOfOccurence")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("LogItems", (string)null);
                 });
 
             modelBuilder.Entity("WebDev.Models.User", b =>
