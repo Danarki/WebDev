@@ -81,9 +81,7 @@
         gameId = document.getElementById('game').value;
         lobbyName = document.getElementById('lobby-name').value;
 
-        let parameterFormat =
-            'gameId=' + gameId
-            + '&lobbyName=' + lobbyName
+        let parameterFormat ='lobbyName=' + lobbyName
             + '&ownerId=' + @Model.UserID;
 
         $.ajax({

@@ -20,6 +20,11 @@ namespace WebDev.Models
 
         public bool? IsDisabled { get; set; }
 
+        public bool? HasAce { get; set; }
+        public int? HandScore { get; set; }
+
+        public int? GameScore { get; set; }
+
         public void Insert(WebAppContext context)
         {
             if (context.ConnectedUsers.Where(x => x.UserID == this.UserID && x.RoomID == this.RoomID).Any())

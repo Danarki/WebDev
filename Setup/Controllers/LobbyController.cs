@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebDev.Models.ViewModels;
 using WebDev.Models;
+using MySqlX.XDevAPI;
 
 namespace WebDev.Controllers
 {
@@ -34,17 +35,25 @@ namespace WebDev.Controllers
 
         public IActionResult Game(int id)
         {
-            HttpContext.Session.SetInt32("UserID", 2);
-
-            EnableAllPlayers(id);
+            //EnableAllPlayers(id);
 
             GameViewModel gameViewModel = new GameViewModel();
 
-            gameViewModel.UserID = (int)HttpContext.Session.GetInt32("UserID");
+            ConnectedUser user = _context.ConnectedUsers
+                .Where(x => x.RoomID == id && x.UserID == HttpContext.Session.GetInt32("UserID")).FirstOrDefault();
+
+            if (user == null || (int)HttpContext.Session.GetInt32("UserID") == null)
+            {
+                return Redirect("/");
+            }
+
+            gameViewModel.UserID = user.UserID;
 
             gameViewModel.LobbyID = id;
 
-            gameViewModel.UserToken = "ABC";
+            gameViewModel.UserToken = user.AuthToken;
+
+            HttpContext.Session.SetInt32("InGame", 1);
 
             return View(gameViewModel);
         }

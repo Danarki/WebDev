@@ -33,6 +33,9 @@ namespace WebDev.Migrations
                     b.Property<int>("CardID")
                         .HasColumnType("int");
 
+                    b.Property<int>("GroupID")
+                        .HasColumnType("int");
+
                     b.Property<int>("OwnerID")
                         .HasColumnType("int");
 
@@ -57,6 +60,15 @@ namespace WebDev.Migrations
 
                     b.Property<int?>("GameID")
                         .HasColumnType("int");
+
+                    b.Property<int?>("GameScore")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HandScore")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("HasAce")
+                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsDisabled")
                         .HasColumnType("bit");
@@ -110,6 +122,15 @@ namespace WebDev.Migrations
                     b.Property<int>("GameID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GameScore")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HandScore")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("HasAce")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
                     b.ToTable("Dealers");
@@ -142,23 +163,6 @@ namespace WebDev.Migrations
                     b.ToTable("DeckCards");
                 });
 
-            modelBuilder.Entity("WebDev.Models.Game", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("GameID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("game");
-                });
-
             modelBuilder.Entity("WebDev.Models.GameRoom", b =>
                 {
                     b.Property<int>("ID")
@@ -167,12 +171,13 @@ namespace WebDev.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("GameID")
-                        .HasColumnType("int");
+                    b.Property<bool>("HasStarted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<int>("OwnerID")
                         .HasColumnType("int");
@@ -184,28 +189,6 @@ namespace WebDev.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("GameRoom", (string)null);
-                });
-
-            modelBuilder.Entity("WebDev.Models.GameScore", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("GameID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("gamescore");
                 });
 
             modelBuilder.Entity("WebDev.Models.GameType", b =>

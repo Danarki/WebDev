@@ -14,7 +14,7 @@ namespace WebDev.Models
         public string Name { get; set; }
 
         [Required]
-        public int GameID { get; set; }
+        public bool HasStarted { get; set; }
 
         [Required]
         public int OwnerID { get; set; }

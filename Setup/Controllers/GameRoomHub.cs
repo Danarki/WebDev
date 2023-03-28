@@ -43,12 +43,13 @@ namespace WebDev.Controllers
         {
             return System.Web.HttpUtility.HtmlEncode(str);
         }
-        
+
         public async Task GetGroupUsers(int groupID)
         {
             using (WebAppContext db = new WebAppContext())
             {
-                List<ConnectedUser>? connections = db.ConnectedUsers.Where(x => x.RoomID.ToString() == groupID.ToString()).ToList();
+                List<ConnectedUser>? connections =
+                    db.ConnectedUsers.Where(x => x.RoomID.ToString() == groupID.ToString()).ToList();
 
                 if (connections != null)
                 {
@@ -105,7 +106,8 @@ namespace WebDev.Controllers
                         c.RoomID = roomID;
                         c.UserID = (int)userId;
 
-                        ConnectedUser? connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
+                        ConnectedUser? connectedCheck = db.ConnectedUsers
+                            .Where(x => x.UserID == userId && x.RoomID == roomID)
                             .FirstOrDefault();
 
                         if (connectedCheck == null)
@@ -144,7 +146,8 @@ namespace WebDev.Controllers
                         c.RoomID = roomID;
                         c.UserID = (int)userId;
 
-                        ConnectedUser? connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
+                        ConnectedUser? connectedCheck = db.ConnectedUsers
+                            .Where(x => x.UserID == userId && x.RoomID == roomID)
                             .FirstOrDefault();
 
                         if (connectedCheck != null)
@@ -181,7 +184,36 @@ namespace WebDev.Controllers
                 }
             }
         }
+
+        public async Task StartGame(string token, string groupID)
+        {
+            using (WebAppContext db = new WebAppContext())
+            {
+                GameRoom roomBuilder = db.GameRooms.Where(x => x.OwnerToken == token && x.ID == int.Parse(groupID)).FirstOrDefault();
+
+                if (roomBuilder != null)
+                {
+                    roomBuilder.HasStarted = true;
+                    
+                    List<ConnectedUser> userList = db.ConnectedUsers.Where(x => x.RoomID == int.Parse(groupID)).ToList();
+
+                    if (userList != null)
+                    {
+                        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                        foreach (ConnectedUser user in userList)
+                        {
+                            user.GameID = user.RoomID;
+                            user.AuthToken = new string(Enumerable.Repeat(chars, 16)
+                                .Select(s => s[new Random(BCrypt.Net.BCrypt.GenerateSalt().GetHashCode()).Next(s.Length)]).ToArray());
+                        }
+                    }
+
+                    db.SaveChanges();
+
+                    await Clients.Group(groupID).SendAsync("gameStarted", roomBuilder.ID);
+                }
+            }
+        }
     }
 }
-
-

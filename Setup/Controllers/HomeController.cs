@@ -119,15 +119,15 @@ namespace WebDev.Controllers
         {
             @ViewData["CurrentPage"] = "Lobby's";
 
-            List<GameRoom> gameRooms = _context.GameRooms.ToList();
+            List<GameRoom> gameRooms = _context.GameRooms.Where(x => !x.HasStarted).ToList();
             List<LobbyOverviewViewModel> lobbyViewModels = new List<LobbyOverviewViewModel>();
             
             foreach (GameRoom gameRoom in gameRooms)
             {
                 LobbyOverviewViewModel lobbyViewModel = new LobbyOverviewViewModel();
+                //GameType type = _context.GameTypes.Where(x => x.ID == gameRoom.ID).FirstOrDefault();
 
-                lobbyViewModel.Game =
-                    _context.GameTypes.Where(x => x.ID == gameRoom.GameID).FirstOrDefault().Name ?? "Niet gevonden!";
+                lobbyViewModel.Game = "Blackjack";
                 lobbyViewModel.Name = gameRoom.Name;
                 lobbyViewModel.Id = gameRoom.ID;
                 lobbyViewModel.OwnerName =

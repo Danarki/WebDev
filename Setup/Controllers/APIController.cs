@@ -79,11 +79,11 @@ namespace WebDev.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateRoom(string lobbyName, int gameId, int ownerId)
+        public async Task<IActionResult> CreateRoom(string lobbyName, int ownerId)
         {
             GameRoom room = new GameRoom();
             room.Name = lobbyName;
-            room.GameID = gameId;
+            room.HasStarted = false;
             room.OwnerID = ownerId;
 
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

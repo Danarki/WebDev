@@ -1,6 +1,6 @@
 ﻿table {
-    width: 100%;
-    margin-top: 5%;
+    width: 90%;
+    margin: 5%;
 }
 
 table, th {
@@ -20,7 +20,7 @@ td {
     border-radius: 5px;
     color: white;
     float: right;
-    margin: 1% 0 1% 0;
+    margin: 1% 5% 1% 0;
     font-weight: bold;
 }
 
@@ -64,13 +64,14 @@ td {
     position: relative;
     border: 1px solid lightgray;
     background: white;
-    width: 100%;
+    width: 90%;
     height: 25em;
     border-radius: 5px;
     padding: 2.5%;
     display: none;
     float: left;
     text-align: center;
+    margin: 5%;
 }
 
 .border-box-bottom {
