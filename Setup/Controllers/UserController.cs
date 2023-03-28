@@ -7,35 +7,59 @@ namespace WebDev.Controllers
 {
     public class UserController : Controller
     {
-        private readonly WebAppContext _context;
-        private IHttpContextAccessor _accessor;
-
-        public UserController(WebAppContext context, IHttpContextAccessor accessor)
-        {
-            _context = context;
-            _accessor = accessor;
-        }
-
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            var user = _context.Users.Where(x => x.Email == email).FirstOrDefault<User>();
-
-            if (user == null)
+            using (WebAppContext db = new WebAppContext())
             {
-                @ViewData["RegistrationMessage"] = "Email not found in database";
-                return View("Index");
-            };
+                User? user = db.Users.Where(x => x.Email == email).FirstOrDefault<User>();
 
-            bool verifyHash = BCrypt.Net.BCrypt.Verify(password, user.Password);
+                if (user == null)
+                {
+                    string message = "Combination of this username/password is not present in database";
+                    @ViewData["RegistrationMessage"] = message;
 
-            if (!verifyHash)
-            {
-                @ViewData["RegistrationMessage"] = "Email not found in database";
-                return View("Index");
-            }
-            else
-            {
+                    LogItem logItem = new LogItem();
+
+                    logItem.Message = message + " for email: " + email;
+                    logItem.TimeOfOccurence = DateTime.Now;
+                    logItem.Source = "Login";
+                    logItem.Type = "Email";
+                    logItem.IsError = true;
+
+
+                    db.LogItem.Add(logItem);
+
+                    db.SaveChanges();
+
+
+                    return View("Index");
+                }
+
+                bool verifyHash = BCrypt.Net.BCrypt.Verify(password, user.Password);
+
+                if (!verifyHash)
+                {
+                    string message = "Combination of this username/password is not present in database";
+
+                    LogItem logItem = new LogItem();
+
+                    logItem.Message = message + " for email: " + email;
+                    logItem.TimeOfOccurence = DateTime.Now;
+                    logItem.Source = "Login";
+                    logItem.Type = "Password";
+                    logItem.IsError = true;
+
+                    db.LogItem.Add(logItem);
+
+                    db.SaveChanges();
+
+                    @ViewData["ErrorTitle"] = "Error ID: " + logItem.ID;
+                    @ViewData["ErrorMessage"] = message;
+
+                    return View("Index");
+                }
+
                 HttpContext.Session.SetInt32("LoggedIn", 1);
                 HttpContext.Session.SetInt32("UserID", user.ID);
                 return Redirect("/Home");
@@ -45,58 +69,223 @@ namespace WebDev.Controllers
         [HttpPost]
         public IActionResult Register(string email, string username, string password, string passwordConfirmation)
         {
+            if (password.Length < 16)
+            {
+                @ViewData["ErrorMessage"] = "The password is not long enough! The requirements is longer than 15 characters";
+                return View("Index");
+            }
+
             if (password != passwordConfirmation)
             {
-                @ViewData["RegistrationMessage"] = "Confirmation password was not equal!";
+                @ViewData["ErrorMessage"] = "Confirmation password was not equal!";
                 return View("Index");
             }
 
-            if (_context.Users.Where(x => x.Email == email).FirstOrDefault<User>() != null)
+            using (WebAppContext db = new WebAppContext())
             {
-                @ViewData["RegistrationMessage"] = "Email is already in use!";
-                return View("Index");
-            };
+                if (db.Users.Where(x => x.Email == email).FirstOrDefault<User>() != null)
+                {
+                    @ViewData["ErrorMessage"] = "Email is already in use!";
+                    return View("Index");
+                }
 
-            try
+                try
+                {
+                    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                    Random random = new Random();
+                    string token = new string(Enumerable.Repeat(chars, 32)
+                        .Select(s => s[random.Next(s.Length)]).ToArray());
+
+                    string passHashed = BCrypt.Net.BCrypt.HashPassword(password);
+
+                    User user = new User();
+                    user.Email = email;
+                    user.Password = passHashed;
+                    user.Username = username;
+                    user.VerifyToken = token;
+                    user.VerifiedAt = null;
+                    user.PasswordToken = null;
+
+                    ValidationContext context = new ValidationContext(user, serviceProvider: null, items: null);
+                    List<ValidationResult> results = new List<ValidationResult>();
+                    bool isValid = Validator.TryValidateObject(user, context, results, true);
+
+                    if (!isValid)
+                    {
+                        StringBuilder sbrErrors = new StringBuilder();
+                        foreach (ValidationResult validationResult in results)
+                        {
+                            sbrErrors.AppendLine(validationResult.ErrorMessage);
+                        }
+
+                        LogItem logItem = new LogItem();
+
+                        logItem.Message = "Validation failed for registration form with errors:" + sbrErrors.ToString();
+                        logItem.TimeOfOccurence = DateTime.Now;
+                        logItem.Source = "User";
+                        logItem.Type = "Register";
+                        logItem.IsError = true;
+
+                        db.LogItem.Add(logItem);
+
+                        db.SaveChanges();
+
+                        @ViewData["ErrorTitle"] = "Error ID: " + logItem.ID;
+                        @ViewData["ErrorMessage"] = "A field was not filled correctly, try again!";
+                    }
+                    else
+                    {
+                        user.Insert(db);
+
+                        string body = "Verify your email: " + Request.Host + "/User/VerifyEmail?token=" +
+                                      user.VerifyToken;
+
+                        MailController.SendEmail(
+                            user.Email,
+                            "Verify your email",
+                            body
+                        );
+
+                        @ViewData["ErrorMessage"] = "User has been created, check your email.";
+                    }
+                }
+                catch (Exception e)
+                {
+                    @ViewData["ErrorMessage"] = "A field was not filled correctly, try again!";
+                }
+
+                return View("Index");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(string email)
+        {
+            using (WebAppContext db = new WebAppContext())
             {
+                User user = db.Users.Where(x => x.Email == email).FirstOrDefault();
+
                 const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-                var random = new Random();
-                var token = new string(Enumerable.Repeat(chars, 16)
+                Random random = new Random();
+                string token = new string(Enumerable.Repeat(chars, 32)
                     .Select(s => s[random.Next(s.Length)]).ToArray());
 
-                string passHashed = BCrypt.Net.BCrypt.HashPassword(password);
-                User user = new User();
-                user.Email = email;
-                user.Password = passHashed;
-                user.Username = username;
-                user.VerifyToken = token;
-                user.VerifiedAt = null;
-                user.PasswordToken = null;
+                user.PasswordToken = token;
 
+                db.SaveChanges();
 
+                string body = "Reset your password: " + Request.Host + "/User/PasswordReset?token=" + user.PasswordToken;
 
-                ValidationContext context = new ValidationContext(user, serviceProvider: null, items: null);
-                List<ValidationResult> results = new List<ValidationResult>();
-                bool isValid = Validator.TryValidateObject(user, context, results, true);
+                MailController.SendEmail(
+                    user.Email,
+                    "Reset your password",
+                    body
+                );
 
-                if (isValid == false)
-                {
-                    @ViewData["RegistrationMessage"] = "A field was not filled correctly, try again!";
-                }
-                else
-                {
-                    user.Insert(_context);
+                @ViewData["ErrorMessage"] = "An email has been sent to reset your password.";
 
-                    @ViewData["RegistrationMessage"] = "User has been created, check your email.";
-                }
+                LogItem logItem = new LogItem();
+
+                logItem.Message = "User sent reset password email to email: " + email;
+                logItem.TimeOfOccurence = DateTime.Now;
+                logItem.Source = "Login";
+                logItem.Type = "PasswordResetMail";
+                logItem.IsError = false;
+
+                db.LogItem.Add(logItem);
+
+                db.SaveChanges();
             }
-            catch (Exception e)
-            {
-                @ViewData["RegistrationMessage"] = "A field was not filled correctly, try again!";
-            } 
 
             return View("Index");
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(string password, string passwordConfirmation, string userToken)
+        {
+            if (password != passwordConfirmation)
+            {
+                @ViewData["ErrorMessage"] = "The passwords you filled are not the same, try again!";
+
+                return Redirect("/User/VerifyEmail?token=" + userToken);
+            }
+
+            using (WebAppContext db = new WebAppContext())
+            {
+                User user = db.Users.Where(x => x.PasswordToken == userToken).FirstOrDefault();
+
+                user.Password = BCrypt.Net.BCrypt.HashPassword(password);
+
+                db.SaveChanges();
+
+                @ViewData["ErrorMessage"] = "Password had been reset, please try logging in now.";
+
+                LogItem logItem = new LogItem();
+
+                logItem.Message = "User succesfully reset password for email: " + user.Email;
+                logItem.TimeOfOccurence = DateTime.Now;
+                logItem.Source = "Login";
+                logItem.Type = "PasswordReset";
+                logItem.IsError = false;
+
+                db.LogItem.Add(logItem);
+
+                db.SaveChanges();
+            }
+
+            return Redirect("/");
+        }
+
+        public IActionResult PasswordReset(string token)
+        {
+            using (WebAppContext db = new WebAppContext())
+            {
+                if (db.Users.Where(x => x.PasswordToken == token).FirstOrDefault() == null)
+                {
+                    return Redirect("/");
+                }
+            }
+
+            @ViewData["token"] = token;
+
+            return View();
+        }
+
+        public IActionResult VerifyEmail(string token)
+        {
+            if (token != null)
+            {
+                using (WebAppContext db = new WebAppContext())
+                {
+                    User user = db.Users.Where(x => x.VerifyToken == token).FirstOrDefault();
+                    if (user != null)
+                    {
+                        user.VerifiedAt = DateTime.Now;
+
+                        db.SaveChanges();
+
+                        @ViewData["ErrorMessage"] = "Your email has been verified, please log in now.";
+                    }
+                    else
+                    {
+                        LogItem logItem = new LogItem();
+                        
+                        logItem.Message = "Access-control failed on email verification with fake token";
+                        logItem.TimeOfOccurence = DateTime.Now;
+                        logItem.Source = "User";
+                        logItem.Type = "VerifyEmail";
+                        logItem.IsError = true;
+
+                        db.LogItem.Add(logItem);
+
+                        db.SaveChanges();
+                    }
+                }
+            }
+
+            return Redirect("/User/Index");
         }
 
         public IActionResult Index()
@@ -104,7 +293,8 @@ namespace WebDev.Controllers
             if (HttpContext.Session.GetInt32("LoggedIn") == null)
             {
                 HttpContext.Session.SetInt32("LoggedIn", 0);
-            } else if (HttpContext.Session.GetInt32("LoggedIn").Equals(1))
+            }
+            else if (HttpContext.Session.GetInt32("LoggedIn").Equals(1))
             {
                 return Redirect("/Home");
             }

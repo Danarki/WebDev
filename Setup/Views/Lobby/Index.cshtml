@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="~/css/lobby.css" />
 
-<div class="mt-2">
+<div class="m-2">
     <div class="message-box"></div>
 
     <table class="table">
@@ -13,6 +13,7 @@
 
                 @if (@Model.OwnerID == Accessor.HttpContext.Session.GetInt32("UserID"))
                 {
+                    <button class="start-button" onclick="StartGame()">Start game</button>
                     <button class="admin-button" onclick="DeleteRoom()">Delete room</button>
                 }
             </th>
@@ -27,6 +28,7 @@
     console.log("init");
 
     var connection = new signalR.HubConnectionBuilder().withUrl('/signalr').build();
+    let reloadFlag = true;
 
     async function disconnect() {
         try {
@@ -34,21 +36,35 @@
         }
         catch (err) {
             console.log(err);
-            setTimeout(ping, 5000);
         }
     }
 
     $(window).on("unload", function () {
-        disconnect();
+        if (reloadFlag) {
+            alert(1);
+            disconnect();
+        }
     });
 
     $(window).on("beforeunload", function () {
-       disconnect();
+        if (reloadFlag) {
+            alert(1);
+            disconnect();
+        }
     });
 
     async function DeleteRoom() {
         try {
             await connection.invoke("DeleteRoom", "@Model.AdminToken", "@Model.RoomID");
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    async function StartGame() {
+        try {
+            await connection.invoke("StartGame", "@Model.AdminToken", "@Model.RoomID");
         }
         catch (err) {
             console.log(err);
@@ -109,6 +125,11 @@
 
     connection.on("removeAll", function (message) {
         alert("Owner has disconnected. You will be returned to the overview.");
-        window.location.href = '/Home/LobbyOverview/'; 
+        window.location.href = '/Home/LobbyOverview/';
+    });
+
+    connection.on("gameStarted", function (id) {
+        reloadFlag = false;
+        window.location.href = '/Lobby/Game/' + id;
     });
 </script>

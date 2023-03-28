@@ -19,19 +19,20 @@ builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSignalR();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    IServiceProvider services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<WebAppContext>();
+    WebAppContext context = services.GetRequiredService<WebAppContext>();
     
     DbInitializer.Initialize(context);
 
@@ -67,7 +68,7 @@ app.MapHub<GameHub>("/game");
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=User}/{action=Index}/{id?}");
-    pattern: "{controller=Lobby}/{action=Game}/{id?}");
+    pattern: "{controller=User}/{action=Index}/{id?}");
+    //pattern: "{controller=Lobby}/{action=Game}/{id?}");
 
 app.Run();

@@ -18,11 +18,10 @@ namespace WebDev
         public DbSet<GameRoom> GameRooms { get; set; }
         public DbSet<GameType> GameTypes { get; set; }
         public DbSet<ConnectedUser> ConnectedUsers { get; set; }
-        public DbSet<Game> Games { get; set; }
-        public DbSet<GameScore> GameScores { get; set; }
         public DbSet<Dealer> Dealers { get; set; }
         public DbSet<CardHand> CardHands { get; set; }
         public DbSet<DeckCards> DeckCards { get; set; }
+        public DbSet<LogItem> LogItem { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +30,7 @@ namespace WebDev
             modelBuilder.Entity<GameRoom>().ToTable("GameRoom");
             modelBuilder.Entity<GameType>().ToTable("GameTypes");
             modelBuilder.Entity<ConnectedUser>().ToTable("ConnectedUsers");
+            modelBuilder.Entity<LogItem>().ToTable("LogItems");
 
             base.OnModelCreating(modelBuilder);
         }

@@ -25,6 +25,10 @@
       "PackagePath": "staticwebassets\\css\\login.css"
     },
     {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\password-reset.css",
+      "PackagePath": "staticwebassets\\css\\password-reset.css"
+    },
+    {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\profile.css",
       "PackagePath": "staticwebassets\\css\\profile.css"
     },

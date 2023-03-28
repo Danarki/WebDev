@@ -4,41 +4,21 @@
 <link rel="stylesheet" href="~/css/game.css"></link>
 
 <div class="lobby-screen">
+    <sidebar class="player-sidebar"></sidebar>
+
     <header class="options-topbar">
+        <div class="topbar-spacer"></div>
         <button class="leaderboard-button">Show leaderboard</button>
         <button class="leave-button">Leave Room</button>
     </header>
 
-    <sidebar class="player-sidebar">
-        <div class="player-score-section">
-            <div class="player-score-section-title">Donald</div>
-            <div class="player-score-section-cards">
-                <div class="card">
-                    <div class="card-top">6</div>
-                    <div class="card-bottom">6</div>
-                </div>
-                <div class="card">
-                    <div class="card-top">10</div>
-                    <div class="card-bottom">10</div>
-                </div>
-            </div>
-            <div class="player-score-section-score">Score: Blackjack</div>
-        </div>
-        <div class="player-score-section">
-            <div class="player-score-section-title">Donald</div>
-            <div class="player-score-section-cards">
-                <div class="card-overlay overlay"><div class="card-top">10</div><div class="card-bottom">10</div></div>
-                <div class="card-overlay overlay"><div class="card-top">2</div><div class="card-bottom">10</div></div>
-                <div class="card-overlay overlay"><div class="card-top">3</div><div class="card-bottom">10</div></div>
-                <div class="card-overlay overlay"><div class="card-top">4</div><div class="card-bottom">10</div></div>
-                <div class="card-overlay overlay"><div class="card-top">5</div><div class="card-bottom">10</div></div>
-            </div>
-            <div class="player-score-section-score">Score: Blackjack</div>
-        </div>
-        <div class="player-score-section"></div>
-        <div class="player-score-section"></div>
-        <div class="player-score-section"></div>
-        <div class="player-score-section"></div>
+    <sidebar class="leaderboard-sidebar">
+        <table class="table sidebar-table">
+            <tr>
+                <th>Player</th>
+                <th>Points</th>
+            </tr>
+        </table>
     </sidebar>
 
     <section class="game-section">
@@ -48,6 +28,7 @@
         </section>
 
         <section class="rule-section">
+            Dealer draws until 16 <br />
             Winning awards 1 point<br />
             Blackjack awards 3 points<br />
             Losing takes 1 point
@@ -57,6 +38,7 @@
             <section class="player-card-score-section"></section>
             <section class="player-card-section" id="player-card-section"></section>
         </section>
+
     </section>
 
     <footer class="action-footer">
@@ -65,10 +47,23 @@
     </footer>
 </div>
 
+
+
+<div class="leaderboard">
+    <span>
+        <div class="close-leaderboard">X</div>
+    </span>
+    <table class="table pop-up-table">
+        <tr>
+            <th>Player</th>
+            <th>Points</th>
+        </tr>
+    </table>
+</div>
+
 <script src="~/js/game.js"></script>
 <script>
     "use strict";
-    let cardAmount = 0;
     let dealerCardAmount = 0;
 
     var connection = new signalR.HubConnectionBuilder().withUrl('/game').build();
@@ -98,7 +93,7 @@
     }
 
     function renderSidebarCards() {
-        const cardCollection = document.getElementsByClassName("overlay");
+        const cardCollection = document.getElementsByClassName("card-overlay");
 
         for (var i = 0; i < cardCollection.length; i++) {
             let identifier = 1;
@@ -106,13 +101,13 @@
                 identifier += (cardCollection.length - 4) * 0.35;
             }
 
-            cardCollection[i].style.marginTop = (i * 0.75) / identifier + "%";
-            cardCollection[i].style.marginLeft = (i * 4) / identifier + 1 + "%";
+            cardCollection[i].style.marginTop = (i * 5) / identifier + "px";
+            cardCollection[i].style.marginLeft = (i * 15) / identifier + 1 + "px";
 
-            cardCollection[i].style.height = ((identifier * 0.1) + 8) + "%";
-            cardCollection[i].style.width = ((identifier * 0.25) + 10) + "%";
+            //cardCollection[i].style.height = ((identifier * 0.1) + 8) + "px";
+            // cardCollection[i].style.width = ((identifier * 0.25) + 10) + "px";
 
-            cardCollection[i].childNodes[1].style.marginTop = ((identifier * 5) + 70) + "%";
+            // cardCollection[i].childNodes[1].style.marginTop = ((identifier * 5) + 70) + "px";
         }
     }
 
@@ -120,8 +115,7 @@
         try {
             await connection.start();
             console.log("SignalR Connected.");
-            connection.invoke("startRound", "1");
-
+            connection.invoke("StartRound", '@Model.LobbyID', '@Model.UserID');
         } catch (err) {
             console.log(err);
             setTimeout(start, 500);
@@ -179,41 +173,152 @@
     });
 
     connection.on("playerCardReceived", function (message) {
-        cardAmount++;
-
         var parsedMessage = JSON.parse(message);
+        if (parsedMessage.UserID == @Model.UserID) {
+            $('.player-card-section').append(getCardHTML(parsedMessage.Symbol, parsedMessage.Rank));
 
-        $('.player-card-section').append(getCardHTML(parsedMessage.Symbol, parsedMessage.Rank));
+            if (parsedMessage.Amount > 2) {
+                var all = document.getElementById('player-card-section').children;
 
-        console.log(cardAmount);
+                for (let i = 0; i < all.length; i++) {
+                    all[i].classList.add("big-card-overlay");
+                }
 
-        if (cardAmount > 2) {
-            var all = document.getElementById('player-card-section').children;
-
-            for (let i = 0; i < all.length; i++) {
-                all[i].classList.add("big-card-overlay");
+                renderPlayerGameCards();
             }
-
-            renderPlayerGameCards();
         }
-    });
-
-    connection.on("cardReceived", function (message) {
-        cardAmount++;
-
     });
 
     connection.on("dealerScoreReceived", function (message) {
         $('.dealer-card-score-section').html(message);
     });
 
-    connection.on("playerScoreReceived", function (message) {
-        $('.player-card-score-section').html(message);
+    connection.on("playerScoreReceived", function (userID, score) {
+        if (userID == @Model.UserID) {
+            $('.player-card-score-section').html(score);
+        }
+    });
+
+    connection.on("newRound", function (message) {
+        dealerCardAmount = 0;
+        $('.player-card-score-section').html('0');
+        $('.dealer-card-score-section').html('0');
+        $('.player-card-section').html('');
+        $('.dealer-card-section').html('');
+    });
+
+    connection.on("playerPointsList", function (message) {
+        $('.sidebar-table tr').not(':first').remove();
+        $('.pop-up-table tr').not(':first').remove();
+        $('.player-sidebar').html('');
+
+        var message = JSON.parse(message);
+        var html = '';
+
+        for (var i = 0; i < message.length; i++) {
+            html += '<tr><td>' + message[i].Name + '</td><td>' + message[i].GameScore + '</td></tr>';
+
+            if (message[i].UserID != @Model.UserID) {
+                var cardsHTML = '<div class="player-score-section">' +
+                    '<div class="player-score-section-title">' + message[i].Name + '</div>' +
+                    '<div class="player-score-section-cards">';
+
+                let cards = message[i].Cards;
+                let cardsLength = cards.length;
+                let AceFound = false;
+                let SymbolFound = false;
+
+                for (let y = 0; y < cardsLength; y++) {
+                    if (cards[y].Rank == 'K' || cards[y].Rank == 'Q' || cards[y].Rank == 'J') {
+                        SymbolFound = true;
+                    }
+
+                    if (cards[y].Rank == 'A') {
+                        AceFound = true;
+                    }
+
+
+                    var label = cards[y].Rank;
+                    var color;
+
+                    switch (cards[y].Symbol) {
+                        case "Diamonds":
+                            label += '♦️';
+                            color = 'red';
+                            break;
+                        case "Hearts":
+                            label += '♥️';
+                            color = 'red';
+                            break;
+                        case "Clubs":
+                            label += '♣️';
+                            color = 'black';
+                            break;
+                        case "Spades":
+                            label += '♠️';
+                            color = 'black';
+                            break;
+                    }
+
+                    if (cardsLength > 2) {
+                        cardsHTML += '<div class="card-overlay">';
+                    } else {
+                        cardsHTML += '<div class="card">';
+                    }
+
+                    cardsHTML += '<div class="card-top ' + color + '">' + label + '</div>' +
+                        '<div class="card-bottom ' + color + '">' + label + '</div></div>';
+                }
+
+                let scoreLabel = message[i].HandScore;
+
+                if (AceFound && SymbolFound && cardsLength == 2) {
+                    scoreLabel = 'Blackjack';
+                } else if (AceFound) {
+                    let score2 = message[i].HandScore - 10;
+                    if (score2 <= 21) {
+                        scoreLabel = score2 + '/' + message[i].HandScore;
+                    } else {
+                        scoreLabel = "Bust";
+                    }
+                } else if (message[i].HandScore > 21) {
+                    scoreLabel = "Bust";
+                }
+
+                cardsHTML += '</div><div class="player-score-section-score"> Score: ' + scoreLabel + ' </div>' +
+                    '</div>';
+
+                $('.player-sidebar').append(cardsHTML);
+            }
+        }
+
+        renderSidebarCards();
+
+        $('.sidebar-table tr').first().after(html);
+        $('.pop-up-table tr').first().after(html);
     });
 
     start();
 
+    $('.leaderboard-button').on('click', function () {
+        $('.leaderboard').fadeIn();
+    });
+
+    $('.close-leaderboard').on('click', function () {
+        $('.leaderboard').fadeOut();
+    });
+
     $('.hit-button').on('click', function () {
         connection.invoke('playerHit', '@Model.LobbyID', '@Model.UserID', '@Model.UserToken');
+    });
+
+    $('.stand-button').on('click', function () {
+        connection.invoke('playerStand', '@Model.LobbyID', '@Model.UserID', '@Model.UserToken');
+    });
+
+    $('.leave-button').on('click', function () {
+        connection.invoke('playerLeave', '@Model.LobbyID', '@Model.UserID', '@Model.UserToken');
+        
+        window.location.href = '/';
     });
 </script>

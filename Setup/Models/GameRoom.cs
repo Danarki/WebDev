@@ -10,10 +10,11 @@ namespace WebDev.Models
         public int ID { get; set; }
 
         [Required]
+        [StringLength(32)]
         public string Name { get; set; }
 
         [Required]
-        public int GameID { get; set; }
+        public bool HasStarted { get; set; }
 
         [Required]
         public int OwnerID { get; set; }

@@ -34,28 +34,44 @@ namespace WebDev.Controllers
             ValidationContext context = new ValidationContext(contactForm, serviceProvider: null, items: null);
             List<ValidationResult> results = new List<ValidationResult>();
             bool isValid = Validator.TryValidateObject(contactForm, context, results, true);
-
-            if (isValid == false)
+            
+            using (WebAppContext db = new WebAppContext())
             {
-                StringBuilder sbrErrors = new StringBuilder();
-                foreach (var validationResult in results)
+                if (!isValid)
                 {
-                    sbrErrors.AppendLine(validationResult.ErrorMessage);
+                    StringBuilder sbrErrors = new StringBuilder();
+                    foreach (ValidationResult validationResult in results)
+                    {
+                        sbrErrors.AppendLine(validationResult.ErrorMessage);
+                    }
+
+                    LogItem logItem = new LogItem();
+
+                    logItem.Message = "Validation failed for contact form with errors:" + sbrErrors.ToString();
+                    logItem.TimeOfOccurence = DateTime.Now;
+                    logItem.Source = "API";
+                    logItem.Type = "SendContact";
+                    logItem.IsError = true;
+
+                    db.LogItem.Add(logItem);
+
+                    db.SaveChanges();
+
+                    return BadRequest(sbrErrors.ToString());
                 }
-                return BadRequest(sbrErrors.ToString());
-            }
 
-            contactForm.Insert(_context);
+                contactForm.Insert(db);
 
-            string body = "Message: " + contactForm.Message;
+                string body = "Message: " + contactForm.Message;
 
-            MailController.SendEmail(
-                contactForm.Email,
-                contactForm.Subject,
-                body
+                MailController.SendEmail(
+                    contactForm.Email,
+                    contactForm.Subject,
+                    body
                 );
 
-            return Ok("Created Succesfully");
+                return Ok("Created Succesfully");
+            }
         }
 
         [Route("CreateRoom")]
@@ -63,47 +79,51 @@ namespace WebDev.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateRoom(string lobbyName, int gameId, int ownerId)
+        public async Task<IActionResult> CreateRoom(string lobbyName, int ownerId)
         {
             GameRoom room = new GameRoom();
             room.Name = lobbyName;
-            room.GameID = gameId;
+            room.HasStarted = false;
             room.OwnerID = ownerId;
 
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
             room.OwnerToken = new string(Enumerable.Repeat(chars, 16)
-                .Select(s => s[new Random(Guid.NewGuid().GetHashCode()).Next(s.Length)]).ToArray());
+                .Select(s => s[new Random(BCrypt.Net.BCrypt.GenerateSalt().GetHashCode()).Next(s.Length)]).ToArray());
 
-            room.Insert(_context);
+            ValidationContext context = new ValidationContext(room, serviceProvider: null, items: null);
+            List<ValidationResult> results = new List<ValidationResult>();
+            bool isValid = Validator.TryValidateObject(room, context, results, true);
 
-            return Ok(room.ID);
-        }
-
-        [Route("RemoveRoom")]
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteRoom(int roomID)
-        {
-            GameRoom gameRoom = _context.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
-
-            if (gameRoom == null)
+            using (WebAppContext db = new WebAppContext())
             {
-                return BadRequest("Room not found");
-            }
+                if (!isValid)
+                {
+                    StringBuilder sbrErrors = new StringBuilder();
+                    foreach (ValidationResult validationResult in results)
+                    {
+                        sbrErrors.AppendLine(validationResult.ErrorMessage);
+                    }
 
-            try
-            {
-                gameRoom.Delete(_context);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.InnerException);
-            }
+                    LogItem logItem = new LogItem();
 
-            return Ok("Removed Succesfully");
+                    logItem.Message = "Validation failed for contact form with errors:" + sbrErrors.ToString();
+                    logItem.TimeOfOccurence = DateTime.Now;
+                    logItem.Source = "API";
+                    logItem.Type = "CreateRoom";
+                    logItem.IsError = true;
+
+                    db.LogItem.Add(logItem);
+
+                    db.SaveChanges();
+
+                    return BadRequest(sbrErrors.ToString());
+                }
+
+                room.Insert(_context);
+
+                return Ok(room.ID);
+            }
         }
     }
 }

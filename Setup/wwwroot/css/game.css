@@ -1,4 +1,94 @@
-﻿.footer {
+﻿@media only screen and (min-width: 600px) {
+    .leaderboard-sidebar {
+        background: white;
+        margin-top: 75px;
+        margin-left: 600px;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        position: fixed;
+        border-bottom: 1px solid black;
+        top: 0;
+    }
+
+    .game-section {
+        margin-left: 150px;
+        margin-top: 75px;
+        height: 85.5%;
+        max-width: 450px;
+        border-right: 1px solid black;
+    }
+
+    .action-footer {
+        max-width: 600px;
+        height: 80px;
+    }
+
+    .options-topbar {
+        max-height: 75px;
+    }
+
+    .leaderboard-button {
+        display: none;
+    }
+
+    .leave-button {
+        margin-top: 1.5%;
+        width: 73%;
+        height: 75%;
+        font-size: 25px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .game-section {
+        margin-left: 25%;
+        margin-top: 10%;
+        height: 90%;
+        max-width: 599px;
+    }
+
+    .leaderboard-sidebar {
+        display: none;
+    }
+
+    .options-topbar {
+        max-height: 50px;
+    }
+
+    .leave-button {
+        width: 35%;
+        font-size: 15px;
+    }
+}
+
+.topbar-spacer {
+    background: blue;
+    width: 25%;
+    display: inline-block;
+}
+
+.options-topbar {
+    width: 100%;
+    max-width: 600px;
+    height: 10%;
+    background: white;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    z-index: 1;
+    position: fixed;
+    display: inline-block;
+}
+
+.game-section {
+    background: #35654d;
+    position: fixed;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
     display: none;
 }
 
@@ -6,9 +96,8 @@
     background: #35654d;
     bottom: 0;
     width: 100%;
-    height: 10%;
-    z-index: 1;
-    padding: 2.5%;
+    z-index: 3;
+    padding: 1%;
     position: fixed;
     border-top: 1px solid black;
 }
@@ -46,17 +135,11 @@
     }
 
 .leave-button {
-    width: 35%;
-    height: 4%;
     background: #f20202;
     border: 1px solid #b80202;
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    font-size: 20px;
-    right: 0;
-    position: fixed;
-    margin: 0.75%;
 }
 
     .leave-button:hover {
@@ -65,18 +148,14 @@
     }
 
 .leaderboard-button {
-    width: 37.5%;
-    height: 4%;
     background: #0027a8;
     border: 1px solid #0027a8;
     border-radius: 5px;
     color: white;
     font-weight: bold;
     font-size: 15px;
-    right: 0;
-    position: fixed;
-    margin: 0.75%;
-    margin-right: 36.5%;
+    width: 37.5%;
+    margin-top: 5%;
 }
 
     .leaderboard-button:hover {
@@ -85,11 +164,13 @@
     }
 
 .player-sidebar {
+    max-width: 150px;
     position: fixed;
     width: 25%;
     height: 100%;
     background: white;
     border-right: 1px solid black;
+    z-index: 2;
 }
 
 .player-score-section {
@@ -114,14 +195,15 @@
     width: 40%;
     height: 85%;
     margin: 5%;
-    border-radius: 7.5%;
+    border-radius: 5px;
 }
 
 .card-overlay {
     border: 1px solid black;
+    max-width: 50px;
     width: 10%;
     height: 7.5%;
-    border-radius: 7.5%;
+    border-radius: 5px;
     position: fixed;
     background: white;
 }
@@ -145,24 +227,9 @@
     font-size: 80%;
 }
 
-.options-topbar {
-    position: fixed;
-    width: 100%;
-    height: 5%;
-    background: white;
-    border-bottom: 1px solid black;
-}
 
-.game-section {
-    background: #35654d;
-    position: fixed;
-    width: 75%;
-    height: 84.5%;
-    margin-top: 11%;
-    margin-left: 25.5%;
-    display: flex;
-    flex-direction: column;
-}
+
+
 
 .dealer-section {
     position: relative;
@@ -201,10 +268,9 @@
 }
 
 .lobby-screen {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
-    background: #35654d;
 }
 
 .big-card {
@@ -212,9 +278,9 @@
     width: 40%;
     margin: 5%;
     border: 0.5px solid black;
-    border-radius: 5%;
+    border-radius: 5px;
     background: white;
-    position: relative
+    position: relative;
 }
 
 .big-card-overlay {
@@ -222,7 +288,7 @@
     width: 40%;
     margin: 5%;
     border: 0.5px solid black;
-    border-radius: 5%;
+    border-radius: 5px;
     background: white;
     position: absolute
 }
@@ -247,8 +313,8 @@
     background: repeating-linear-gradient( 45deg, red, red 10px, darkred 10px, darkred 15px );
     width: 85%;
     height: 92.5%;
-    margin: 7.5%;
-    border-radius: 5%;
+    margin: 7.5% 0 0 7.5%;
+    border-radius: 5px;
     border: 0.5px solid black;
 }
 
@@ -260,7 +326,7 @@
     background: gray;
     color: white;
     font-weight: bold;
-    border-radius: 15%;
+    border-radius: 5px;
     text-align: center;
     margin: 0 auto;
 }
@@ -274,7 +340,7 @@
     background: gray;
     color: white;
     font-weight: bold;
-    border-radius: 15%;
+    border-radius: 5px;
     text-align: center;
     margin: 0 auto;
 }
@@ -285,4 +351,55 @@
 
 .black {
     color: black;
+}
+
+.leaderboard {
+    width: 80%;
+    height: 80%;
+    background: white;
+    position: absolute;
+    display: none;
+    z-index: 5;
+    margin: 10%;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5%;
+}
+
+span {
+    width: 100%;
+}
+
+.close-leaderboard {
+    display: flex;
+    float: right;
+    font-size: 200%;
+    margin-bottom: 5%;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+}
+
+table, th {
+    border: 1px solid;
+    padding: 2% 0 2% 0;
+    text-align: center;
+}
+
+.sidebar-table {
+    margin: 2.5%;
+    width: 30%;
+}
+
+td {
+    border: 1px solid;
+    padding: 1% 0.5% 1% 0.5%;
+}
+
+.navbar {
+    display: none;
 }

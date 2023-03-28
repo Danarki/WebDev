@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "p3PuXHqCgyBGdxBWEi5taKwaXrnYgRVx0cOI117dv+g=",
+  "Hash": "TOurkGs/vkK6Lwe2puzsUSjr21GBgcmzds7CGQRMMyA=",
   "Source": "WebDev",
   "BasePath": "_content/WebDev",
   "Mode": "Default",
@@ -1154,6 +1154,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\login.css"
+    },
+    {
+      "Identity": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\password-reset.css",
+      "SourceId": "WebDev",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\",
+      "BasePath": "_content/WebDev",
+      "RelativePath": "css/password-reset.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\password-reset.css"
     },
     {
       "Identity": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\profile.css",

@@ -95,7 +95,7 @@ namespace WebDev.Controllers
 
             int num1, num2, solution;
 
-            Random random = new Random(Guid.NewGuid().GetHashCode());
+            Random random = new Random(BCrypt.Net.BCrypt.GenerateSalt().GetHashCode());
             num1 = random.Next(1, 10);
             num2 = random.Next(1, 10);
 
@@ -119,15 +119,15 @@ namespace WebDev.Controllers
         {
             @ViewData["CurrentPage"] = "Lobby's";
 
-            var gameRooms = _context.GameRooms.ToList();
-
+            List<GameRoom> gameRooms = _context.GameRooms.Where(x => !x.HasStarted).ToList();
             List<LobbyOverviewViewModel> lobbyViewModels = new List<LobbyOverviewViewModel>();
+            
             foreach (GameRoom gameRoom in gameRooms)
             {
                 LobbyOverviewViewModel lobbyViewModel = new LobbyOverviewViewModel();
+                //GameType type = _context.GameTypes.Where(x => x.ID == gameRoom.ID).FirstOrDefault();
 
-                lobbyViewModel.Game =
-                    _context.GameTypes.Where(x => x.ID == gameRoom.GameID).FirstOrDefault().Name ?? "Niet gevonden!";
+                lobbyViewModel.Game = "Blackjack";
                 lobbyViewModel.Name = gameRoom.Name;
                 lobbyViewModel.Id = gameRoom.ID;
                 lobbyViewModel.OwnerName =
@@ -155,7 +155,7 @@ namespace WebDev.Controllers
 
         public void UpdatePageViewCookie()
         {
-            var currentCookieValue = Request.Cookies[PageViews];
+            string? currentCookieValue = Request.Cookies[PageViews];
 
             if (currentCookieValue == null)
             {
@@ -163,7 +163,7 @@ namespace WebDev.Controllers
             }
             else
             {
-                var newCookieValue = short.Parse(currentCookieValue) + 1;
+                int newCookieValue = short.Parse(currentCookieValue) + 1;
 
                 Response.Cookies.Append(PageViews, newCookieValue.ToString());
             }

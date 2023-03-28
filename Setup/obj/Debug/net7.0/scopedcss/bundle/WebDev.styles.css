@@ -94,3 +94,27 @@ button.accept-policy[b-8q4gx12712] {
 .hide[b-8q4gx12712] {
     display: none;
 }
+
+.error-box[b-8q4gx12712] {
+    min-height: 10%;
+    height: fit-content;
+    width: 50%;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    border-left: 1px;
+    border-top: 1px;
+    border-radius: 0 0 5px 0;
+}
+
+.error-title[b-8q4gx12712] {
+    text-align: center;
+    padding-top: 2.5%;
+    font-size: 125%;
+    font-weight: bold;
+}
+
+.error-message[b-8q4gx12712] {
+    text-align: center;
+    padding-top: 2.5%;
+}
