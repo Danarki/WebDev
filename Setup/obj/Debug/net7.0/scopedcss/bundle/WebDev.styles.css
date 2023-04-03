@@ -2,6 +2,39 @@
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+@media only screen and (min-width: 600px) {
+    .gdpr__buttons__accept[b-8q4gx12712] {
+        font-size: 24px;
+        width: 10%;
+        height: 1%;
+    }
+
+    .gdpr__buttons__decline[b-8q4gx12712] {
+        font-size: 24px;
+        width: 10%;
+    }
+
+    .gdpr[b-8q4gx12712] {
+        padding-bottom: 1%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .gdpr__buttons__accept[b-8q4gx12712] {
+        width: 25%;
+        padding: 1%;
+    }
+
+    .gdpr__buttons__decline[b-8q4gx12712] {
+        width: 25%;
+        padding: 1%;
+    }
+
+    .gdpr[b-8q4gx12712] {
+        padding-bottom: 3%;
+    }
+}
+
 a.navbar-brand[b-8q4gx12712] {
     white-space: normal;
     text-align: center;
@@ -58,7 +91,6 @@ button.accept-policy[b-8q4gx12712] {
     z-index: 5;
     width: 100%;
     background: #f0f0f0;
-    padding-bottom: 3%;
 }
 
 .gdpr__buttons__accept[b-8q4gx12712] {
@@ -66,8 +98,6 @@ button.accept-policy[b-8q4gx12712] {
     border: 1px solid green;
     border-radius: 5px;
     color: white;
-    width: 25%;
-    padding: 1%;
     font-weight: bold;
 }
 
@@ -81,8 +111,6 @@ button.accept-policy[b-8q4gx12712] {
     border: 1px solid #db0000;
     border-radius: 5px;
     color: white;
-    width: 25%;
-    padding: 1%;
     font-weight: bold;
 }
 
@@ -96,7 +124,8 @@ button.accept-policy[b-8q4gx12712] {
 }
 
 .error-box[b-8q4gx12712] {
-    min-height: 10%;
+    min-height: 15%;
+    height: 500px;
     height: fit-content;
     width: 50%;
     border-width: 1px;

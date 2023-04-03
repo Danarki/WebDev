@@ -1,0 +1,36 @@
+﻿table {
+    width: 90%;
+    margin: 5%;
+    table-layout: fixed
+}
+
+table, th {
+    border: 1px solid;
+    padding: 2% 0 2% 0;
+    text-align: center;
+}
+
+td {
+    border: 1px solid;
+    padding: 1% 0.5% 1% 0.5%;
+}
+
+input, select, option {
+    height: 100%;
+    width: 100%;
+}
+
+.changes-button {
+    background: #09e326;
+    border: 1px solid green;
+    border-radius: 5px;
+    color: white;
+    width: 100%;
+    padding: 1%;
+    font-weight: bold;
+}
+
+    .changes-button:hover {
+        background: green;
+        border: 1px solid green;
+    }

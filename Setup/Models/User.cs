@@ -7,6 +7,14 @@ using WebDev.Controllers;
 
 namespace WebDev.Models
 {
+    public enum Role
+    {
+        NotSet = 0,
+        User = 1,
+        Admin = 2,
+        Moderator = 3
+    }
+
     [Table("users")]
     public class User
     { 
@@ -27,6 +35,14 @@ namespace WebDev.Models
         public DateTime? VerifiedAt { get; set; }
 
         public string? PasswordToken { get; set; }
+
+        public Role Role { get; set; }
+
+        [NotMapped]
+        public string RoleName { get; set; }
+
+        [NotMapped]
+        public int RoleValue { get; set; }
 
         public void Insert(WebAppContext context)
         {

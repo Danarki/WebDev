@@ -4,8 +4,7 @@
 
         this.bindEvents();
 
-        if (!this.getCookieStatus()) this.showGDPR()
-        else this.hideGDPR()
+        if (this.getCookieStatus()) this.hideGDPR()
     }
 
     setCookieStatus(status) {

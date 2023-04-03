@@ -7,14 +7,10 @@ namespace WebDev.Controllers
 {
     public class LobbyController : Controller
     {
-        private readonly ILogger<LobbyController> _logger;
-
         private WebAppContext _context;
 
-        public LobbyController(ILogger<LobbyController> logger, WebAppContext context)
+        public LobbyController(WebAppContext context)
         {
-            _logger = logger;
-
             _context = context;
         }
 
@@ -35,13 +31,12 @@ namespace WebDev.Controllers
 
         public IActionResult Game(int id)
         {
-            //EnableAllPlayers(id);
-
             GameViewModel gameViewModel = new GameViewModel();
 
             ConnectedUser user = _context.ConnectedUsers
                 .Where(x => x.RoomID == id && x.UserID == HttpContext.Session.GetInt32("UserID")).FirstOrDefault();
 
+            // check if user is in lobby and logged in
             if (user == null || (int)HttpContext.Session.GetInt32("UserID") == null)
             {
                 return Redirect("/");
@@ -60,9 +55,7 @@ namespace WebDev.Controllers
 
         public IActionResult Index(int id)
         {
-           //HttpContext.Session.SetInt32("LoggedIn", 1);
-           //HttpContext.Session.SetInt32("UserID", 2);
-
+            // check if room exists
             GameRoom room = _context.GameRooms.Where(x => x.ID == id).FirstOrDefault();
 
             if (room == null)
@@ -72,6 +65,7 @@ namespace WebDev.Controllers
 
             string? token = null;
 
+            // check if user is owner of lobby, then set owner token
             if (HttpContext.Session.GetInt32("UserID") == room.OwnerID)
             {
                 token = room.OwnerToken;

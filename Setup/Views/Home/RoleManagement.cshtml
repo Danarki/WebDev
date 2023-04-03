@@ -1,0 +1,77 @@
+﻿@using WebDev.Models
+@model List<User>
+
+<link rel="stylesheet" href="~/css/rolemanagement.css" />
+
+<div>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        <!-- I'm far from happy with creating the CSRF Token like this, but no time to fix before due date :( -->
+        <form asp-antiforgery="true"></form>
+        @foreach (User user in @Model)
+        {
+            <tr>
+                <td>
+                    <input type="text" value="@user.Username" id="@user.ID-username" />
+                </td>
+                <td>
+                    <input type="text" value="@user.Email" id="@user.ID-email" />
+                </td>
+                <td>
+                    <select id="@user.ID-role">
+                        <option value="0">NotSet</option>
+                        <option value="1">User</option>
+                        <option value="2">Admin</option>
+                        <option value="3">Moderator</option>
+                    </select>
+
+                </td>
+                <td>
+                    <button id="@user.ID-changes-button" class="changes-button">Save Changes</button>
+            </tr>
+            <script>
+                document.getElementById('@user.ID-role').value = @user.RoleValue;
+
+                $('#@user.ID-changes-button').on('click', function (e) {
+                    e.preventDefault();
+
+                    let url = '/api/UpdateUser?';
+                    let username = document.getElementById('@user.ID-username').value;
+                    let email = document.getElementById('@user.ID-email').value;
+                    let role = document.getElementById('@user.ID-role').value;
+
+                    token = $('input[name="__RequestVerificationToken"]').val();
+
+                    let parameterFormat = 'id=' + @user.ID + '&' +
+                        'username=' + username
+                        + '&email=' + email
+                        + '&role=' + role;
+
+                    console.log(url + parameterFormat);
+                    $.ajax({
+                        type: "POST",
+                        url: url + parameterFormat,
+                        data: {
+                            __RequestVerificationToken: token
+                        },
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        async: true,
+                        success: function (msg) {
+                            alert(msg);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            alert(error.responseText);
+                        }
+                    })
+                    console.log(username, email, role);
+                });
+            </script>
+        }
+    </table>
+</div>

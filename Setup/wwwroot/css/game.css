@@ -38,6 +38,15 @@
         height: 75%;
         font-size: 25px;
     }
+
+    .admin-button {
+        width: 20%;
+        bottom: 0;
+        right: 0;
+        margin: 1%;
+        z-index: 3;
+        font-size: 25px;
+    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -60,6 +69,23 @@
         width: 35%;
         font-size: 15px;
     }
+
+    .admin-button {
+        width: 49.0%;
+        bottom: 0;
+        margin-left: 25.5%;
+        margin-bottom: 13%;
+        font-size: 15px;
+    }
+}
+
+.admin-button {
+    position: absolute;
+    background: blue;
+    border: 1px solid blue;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
 }
 
 .topbar-spacer {

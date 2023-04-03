@@ -410,3 +410,5 @@ C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\n
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\obj\Debug\net7.0\WebDev.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\Google.Authenticator.dll
+C:\Users\Daan\OneDrive - Windesheim Office365\Documents\WebDev\Setup\bin\Debug\net7.0\QRCoder.dll

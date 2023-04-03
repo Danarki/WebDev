@@ -13,12 +13,30 @@ namespace WebDev.Controllers
 
         public static void SendEmail(string email, string subject, string body)
         {
-            MailAddress from = new MailAddress("webdev@webdev.com");
+            MailAddress from = new MailAddress("mailer@cardigo.com");
             MailAddress to = new MailAddress(email);
 
             MailMessage mailMessage = new MailMessage(from, to);
             mailMessage.Subject = EncodeString(subject);
-            mailMessage.Body = EncodeString(body);
+            mailMessage.Body = "<!doctype html>" +
+                               "<html style='height: 100%; width: 100%'>" +
+                               "<div style='" +
+                               "border:1px solid black; " +
+                               "width: 80%; " +
+                               "height: 50%; " +
+                               "padding: 25px; " +
+                               "border-radius: 5px;" +
+                               "margin: 10%'>" +
+                               "<h3>Dear Cardigo user,</h3>" +
+                               "<br/>" + 
+                               "<p>" + EncodeString(body) + "</p>" +
+                               "<br/>" +
+                               "<p>With kind regards,</p>" +
+                               "<br/>" +
+                               "<p>Team Cardigo</p>" +
+                               "</div>" +
+                               "</html>";
+            mailMessage.IsBodyHtml = true;
 
             SmtpClient smtp = new SmtpClient();
             smtp.Host = "sandbox.smtp.mailtrap.io";

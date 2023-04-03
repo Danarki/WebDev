@@ -1,6 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+﻿@inject IHttpContextAccessor Accessor
 
-<p>Use this page to detail your site's privacy policy.</p>
+@if (Accessor.HttpContext.Session.GetInt32("LoggedIn").Equals(0))
+{
+    <button class="return-button" onclick="window.location.href = '/'">Return to home</button>
+}
+<div class="privacy-container">
+    <h1 class="privacy-title">Cardigo's Privacy Policy</h1>
+
+    <div class="privacy-text">
+        <h5>Personal information</h5>
+        <p>
+            The only personal information that is collected about you are the fields that you personally fill in.
+            This information is collected for necessary purposes and only used when absolutely required.
+            When you fill these fields you consent to the usage of this information on this website only.
+            The information we collect will never be shared with third parties.
+        </p>
+        <h5>Cookies</h5>
+        <p>
+            Cardigo makes use of cookies.
+            These cookies are 100% necessary for the website to function normally.
+            The only data that is stored in these cookies are not sensitive data, like passwords or emails.
+            Once these cookies are no longer required they are deleted along with the data they held.
+        </p>
+        <h5>Data collection</h5>
+        <p>
+            Cardigo does not collect data without your knowledge, nor consent.
+        </p>
+        <h5>Data collection</h5>
+        <p>
+            If you accept our General Data Protection Regulation (GDPR), you consent to all the statements listed above.
+        </p>
+    </div>
+</div>

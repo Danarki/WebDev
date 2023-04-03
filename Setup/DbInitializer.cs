@@ -13,9 +13,10 @@ namespace WebDev
             {
                 User user = new User();
                 user.Username = "admin";
-                user.Password = BCrypt.Net.BCrypt.HashPassword("admin");
+                user.Password = BCrypt.Net.BCrypt.HashPassword("Adm!nPa$$w0rdCard!g0");
                 user.VerifiedAt = DateTime.UtcNow;
                 user.Email = "admin@cardigo.com";
+                user.Role = Role.Moderator;
 
                 context.Users.Add(user);
 

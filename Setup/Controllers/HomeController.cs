@@ -5,21 +5,17 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using WebDev.Models;
 using WebDev.Models.ViewModels;
 using System;
-
+using System.Text;
+using Google.Authenticator;
 namespace WebDev.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
         private const string PageViews = "PageViews";
-
-        private Developer _developer;
 
         private WebAppContext _context;
 
-        private List<GameRoom> _gameRooms;
-
+        // cookie tracker for assignment, tracks cookies
         public void IncreaseTrackerCookie()
         {
             string newValue = "1";
@@ -32,13 +28,22 @@ namespace WebDev.Controllers
             HttpContext.Response.Cookies.Append("tracker-cookie", newValue);
         }
 
+        // this gets executed on every redirect
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
 
             IncreaseTrackerCookie();
 
-            if (HttpContext.Session.GetInt32("LoggedIn") != 1)
+            int? loggedIn = HttpContext.Session.GetInt32("LoggedIn");
+            object? routeData = context.RouteData.Values.Values.Skip(1).First();
+
+            if (routeData.ToString() == "Privacy") // users may always navigate to the privacy page
+            {
+                return;
+            }
+
+            if (loggedIn != 1) // user is not logged in, redirect to login
             {
                 RouteValueDictionary route = new RouteValueDictionary(new
                 {
@@ -46,33 +51,42 @@ namespace WebDev.Controllers
                     Action = "Index"
                 });
 
-                //context.Result = new RedirectToRouteResult(route);
-
-                return;
+                context.Result = new RedirectToRouteResult(route);
             }
         }
 
-        public HomeController(ILogger<HomeController> logger, WebAppContext context)
+        public HomeController(WebAppContext context)
         {
-            _logger = logger;
-
             _context = context;
+        }
 
-            _developer = new Developer
+        public IActionResult RoleManagement()
+        {
+            // check if role is not below moderator
+            int? userRole = HttpContext.Session.GetInt32("Role");
+            if (userRole == null || userRole <= 1)
             {
-                FullName = "Daan Timmerman",
-                Description = "Charles Robert Darwin (12 februari 1809 – 19 april 1882) was een Engels autodidact op het gebied van natuurlijke historie, biologie en geologie. Darwin ontleent zijn roem aan zijn theorie dat evolutie van soorten wordt gedreven door natuurlijke selectie. Het bestaan van evolutie werd omstreeks 1850 al door een groot deel van de wetenschappelijke gemeenschap geaccepteerd. De acceptatie van natuurlijke selectie als aandrijvend mechanisme liet langer op zich wachten, maar geldt tegenwoordig als onomstreden.",
-                ImageSrcs = new List<string>{
-                    "/images/person-icon.png",
-                    "/images/Greg.jpg",
-                },
-                Skills = new List<string>
-                {
-                    "Fast learner",
-                    "Greg Paul enjoyer",
-                    "Chef"
-                }
-            };
+                return Redirect("/");
+            }
+
+            @ViewData["CurrentPage"] = "Role Management";
+
+            // get all users and format user data to be readable
+            List<User> userList = new List<User>();
+            using (WebAppContext db = new WebAppContext())
+            {
+                userList = db.Users.ToList();
+            }
+
+            foreach (User user in userList)
+            {
+                string role = Enum.GetName(typeof(Role), user.Role);
+
+                user.RoleName = role;
+                user.RoleValue = (int)user.Role;
+            }
+
+            return View(userList);
         }
 
         public IActionResult Index()
@@ -86,13 +100,32 @@ namespace WebDev.Controllers
         {
             @ViewData["CurrentPage"] = "Profile page";
 
-            return View(_developer);
+            // could be used with different developers from database if more developers join in on creating this app
+            return View(new Developer
+            {
+                FullName = "Daan Timmerman",
+                Description =
+                    "Daan Timmerman is a developer and student at Windesheim HBO-ICT. For his Web Development semester it seemed fun to make a website where users could play cardgames together. That's how Cardigo started! :)",
+                ImageSrcs = new List<string>
+                {
+                    "/images/person-icon.png",
+                    "/images/second-image-placeholder.jpg",
+                },
+                Skills = new List<string>
+                {
+                    "Software Developer",
+                    "Fast learner",
+                    "Speaks chinese on basic level",
+                    "Beer enthousiast",
+                }
+            });
         }
 
         public IActionResult Contact()
         {
             @ViewData["CurrentPage"] = "Contact";
 
+            // generate random equation for captcha
             int num1, num2, solution;
 
             Random random = new Random(BCrypt.Net.BCrypt.GenerateSalt().GetHashCode());
@@ -105,7 +138,7 @@ namespace WebDev.Controllers
             @ViewData["captcha-num2"] = num2;
             @ViewData["captcha-solution"] = solution;
 
-            return View(_developer);
+            return View();
         }
 
         public IActionResult Privacy()
@@ -119,19 +152,31 @@ namespace WebDev.Controllers
         {
             @ViewData["CurrentPage"] = "Lobby's";
 
+            // gather all romms that have not started playing yet
             List<GameRoom> gameRooms = _context.GameRooms.Where(x => !x.HasStarted).ToList();
             List<LobbyOverviewViewModel> lobbyViewModels = new List<LobbyOverviewViewModel>();
-            
+
             foreach (GameRoom gameRoom in gameRooms)
             {
                 LobbyOverviewViewModel lobbyViewModel = new LobbyOverviewViewModel();
+
+                //Below line is obsolete, but remains for eventual later repurposing when multiple game types are implemented.
                 //GameType type = _context.GameTypes.Where(x => x.ID == gameRoom.ID).FirstOrDefault();
 
-                lobbyViewModel.Game = "Blackjack";
+                User owner = _context.Users.Where(x => x.ID == gameRoom.OwnerID).FirstOrDefault();
+
+                lobbyViewModel.Game = "Blackjack"; // static blackjack for now
                 lobbyViewModel.Name = gameRoom.Name;
                 lobbyViewModel.Id = gameRoom.ID;
-                lobbyViewModel.OwnerName =
-                    _context.Users.Where(x => x.ID == gameRoom.OwnerID).FirstOrDefault().Username ?? "Niet gevonden!";
+
+                string ownerName = "Niet gevonden!";
+
+                if (owner != null)
+                {
+                    ownerName = owner.Username;
+                }
+
+                lobbyViewModel.OwnerName = ownerName;
 
                 lobbyViewModels.Add(lobbyViewModel);
             }

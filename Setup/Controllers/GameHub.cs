@@ -10,47 +10,7 @@ namespace WebDev.Controllers
 {
     public class GameHub : Hub
     {
-        public List<Card> CardHand { get; set; }
-        public bool Initialized { get; set; }
-        public string RoomID { get; set; }
-
-        public void AddToRoom(int roomID)
-        {
-            HttpContext context = new HttpContextAccessor().HttpContext;
-
-            using (WebAppContext db = new WebAppContext())
-            {
-                GameRoom room = db.GameRooms.Where(x => x.ID == roomID).FirstOrDefault();
-
-                if (room != null)
-                {
-                    int? userId = context.Session.GetInt32("UserID");
-
-                    User user = db.Users.Where(x => x.ID == userId).FirstOrDefault();
-
-                    if (user != null)
-                    {
-                        ConnectedUser c = new ConnectedUser();
-                        c.RoomID = roomID;
-                        c.UserID = (int)userId;
-
-                        ConnectedUser? connectedCheck = db.ConnectedUsers.Where(x => x.UserID == userId && x.RoomID == roomID)
-                            .FirstOrDefault();
-
-                        if (connectedCheck == null)
-                        {
-                            db.ConnectedUsers.Add(c);
-                            db.SaveChanges();
-
-                            Groups.AddToGroupAsync(Context.ConnectionId, roomID.ToString());
-
-                            playerJoined(user.Username, roomID.ToString());
-                        }
-                    }
-                }
-            }
-        }
-
+        // init for the game, gets called by every user and adds them to the group, only the call from the original owner hands out cards etc
         public void StartRound(string GameID, string UserID)
         {
             Groups.AddToGroupAsync(Context.ConnectionId, GameID);
@@ -59,9 +19,13 @@ namespace WebDev.Controllers
             {
                 ConnectedUser leadUser = db.ConnectedUsers.Where(x => x.GameID == int.Parse(GameID)).FirstOrDefault();
 
+                // lead user was found and is user that made the call.
                 if (leadUser != null && leadUser.UserID == int.Parse(UserID))
                 {
+                    // end round serves as a cleaner and enabler for the players
                     EndRound(int.Parse(GameID), true);
+                 
+                    // insert a new deck
                     DeckCards d = new DeckCards();
                     d.InsertDeck(int.Parse(GameID));
 
@@ -69,16 +33,22 @@ namespace WebDev.Controllers
 
                     GiveDealerCard(GameID);
 
+                    // gives all players 2 cards
                     GiveAllPlayersBeginningCards(GameID);
 
+                    // sends all current scores and names to all players
                     sendPlayerScores(GameID);
                 }
             }
         }
 
+        // used every new round, get called internally
         public void NewRound(string GameID)
         {
+            // end round serves as a cleaner and enabler for the players
             EndRound(int.Parse(GameID), false);
+
+            // send new round signal
             newRoundStart(GameID);
 
             GiveDealerCard(GameID);
@@ -88,6 +58,7 @@ namespace WebDev.Controllers
             sendPlayerScores(GameID);
         }
 
+        // gets all players and gives them 2 cards of the top of the deck
         public void GiveAllPlayersBeginningCards(string GameID)
         {
             using (WebAppContext db = new WebAppContext())
@@ -99,8 +70,6 @@ namespace WebDev.Controllers
                     GivePlayerCard(GameID, user.UserID);
                     GivePlayerCard(GameID, user.UserID);
                 }
-
-                //db.ConnectedUsers.Where(x => x.UserID == 1).FirstOrDefault().IsDisabled = true;
 
                 db.SaveChanges();
             }
@@ -120,30 +89,37 @@ namespace WebDev.Controllers
             }
         }
 
+        // gives a player a card 
         public void GivePlayerCard(string gameID, int playerID)
         {
             using (WebAppContext db = new WebAppContext())
             {
                 ConnectedUser user = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID) && x.UserID == playerID).FirstOrDefault();
 
+                // checks if user has been found, if disabled flag is filled and not true
                 if (user != null && user.IsDisabled != null && (bool)user.IsDisabled)
                 {
                     return;
                 }
 
+                // get first card from the deck that is not in use
                 DeckCards c = db.DeckCards.Where(x => x.GameID == int.Parse(gameID) && !x.InUse).FirstOrDefault();
 
+                // checks if card is found
                 if (c == null)
                 {
+                    // inserts new deck
                     DeckCards d = new DeckCards();
                     d.InsertDeck(int.Parse(gameID));
 
+                    // set new card
                     c = db.DeckCards.Where(x => x.GameID == int.Parse(gameID) && !x.InUse).FirstOrDefault();
                 }
 
                 c.InUse = true;
                 db.SaveChanges();
 
+                // add card to hand of player
                 CardHand h = new CardHand
                 {
                     CardID = c.ID,
@@ -158,6 +134,8 @@ namespace WebDev.Controllers
 
                 List<CardHand> dh = db.CardHands.Where(x => x.OwnerID == playerID && !x.OwnerIsDealer).ToList();
                 List<DeckCards> cards = new List<DeckCards>();
+
+                // get all cards in hand currently
                 foreach (CardHand hand in dh)
                 {
                     DeckCards card = db.DeckCards.Where(x => x.ID == hand.CardID && x.GameID == int.Parse(gameID)).FirstOrDefault();
@@ -168,12 +146,17 @@ namespace WebDev.Controllers
                     }
                 }
 
+                // send the newly acquired card to the player
                 SendPlayerCard(playerID, c, gameID, cards.Count);
+
+                // count hand score
                 countScore(cards, playerID, gameID);
+
                 sendPlayerScores(gameID);
             }
         }
 
+        // same process as function above, but then for the dealer
         public void GiveDealerCard(string GameID)
         {
             using (WebAppContext db = new WebAppContext())
@@ -223,11 +206,16 @@ namespace WebDev.Controllers
             }
         }
 
+        // function for checking if card hand is blackjack
         public bool CheckHasBlackjack(bool HasAce, int cardCount, int score)
         {
             return (HasAce && cardCount == 2 && score == 21);
         }
 
+        // assess points for players against the dealer which has three possibilities
+        // Dealer has Blackjack
+        // Dealer busted
+        // Dealer has score, but not over 21
         public void AssessPoints(string gameID)
         {
             using (WebAppContext db = new WebAppContext())
@@ -236,30 +224,34 @@ namespace WebDev.Controllers
                 List<CardHand> dealerCards = db.CardHands.Where(x => x.OwnerID == dealer.ID && x.OwnerIsDealer).ToList();
                 if (dealer != null && dealerCards != null)
                 {
+                    // dealer has blackjack, all players without blackjack lose
                     if (CheckHasBlackjack((bool)dealer.HasAce, dealerCards.Count, (int)dealer.HandScore))
                     {
-                        List<ConnectedUser> userList = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID)).ToList(); // players lose except BJ hands
+                        List<ConnectedUser> userList = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID)).ToList(); 
 
                         foreach (ConnectedUser user in userList)
                         {
                             List<CardHand> userCards = db.CardHands.Where(x => x.OwnerID == user.UserID && !x.OwnerIsDealer).ToList();
-                            if (!CheckHasBlackjack((bool)user.HasAce, userCards.Count, (int)user.HandScore)) // quite monstrous?
+                            if (!CheckHasBlackjack((bool)user.HasAce, userCards.Count, (int)user.HandScore))
                             {
                                 user.GameScore--;
                                 db.SaveChanges();
                             }
                         }
                     }
+                    // dealer does not have blackjack
                     else
                     {
                         int dealerScore = (int)dealer.HandScore;
 
-                        if ((bool)dealer.HasAce && dealerScore >= 22 && dealerScore <= 31) // dealer uses gotten ace as a 1
+                        // dealer has ace and score above 21. Ace now gets used as a 1 instead of 11
+                        if ((bool)dealer.HasAce && dealerScore >= 22 && dealerScore <= 31) 
                         {
                             dealerScore -= 10;
                         }
 
-                        if (dealerScore > 21) // Dealer busted
+                        // Dealer busted, all players get points when not busted
+                        if (dealerScore > 21) 
                         {
                             List<ConnectedUser> winningUserList = db.ConnectedUsers.Where(x => x.HandScore <= 21 || (bool)x.HasAce && x.HandScore <= 31).ToList();
 
@@ -273,6 +265,8 @@ namespace WebDev.Controllers
                             foreach (ConnectedUser winner in winningUserList)
                             {
                                 List<CardHand> userCards = db.CardHands.Where(x => x.OwnerID == winner.UserID && !x.OwnerIsDealer).ToList();
+
+                                // winning user has blackjack
                                 if (CheckHasBlackjack((bool)winner.HasAce, userCards.Count, (int)winner.HandScore))
                                 {
                                     winner.GameScore += 3;
@@ -284,9 +278,9 @@ namespace WebDev.Controllers
                             }
 
                             db.SaveChanges();
-                            // all players get points when not busted
                         }
-                        else // dealer has greater than 16 but not bust
+                        // dealer has greater than 16 but not bust
+                        else 
                         {
                             List<ConnectedUser> userList = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID)).ToList();
 
@@ -301,16 +295,19 @@ namespace WebDev.Controllers
                                 {
                                     int userScore = (int)user.HandScore;
 
-                                    if ((bool)user.HasAce && userScore >= 22 && userScore <= 31) // dealer uses gotten ace as a 1
+                                    // player uses ace as 1 if score is greater than 21
+                                    if ((bool)user.HasAce && userScore >= 22 && userScore <= 31) 
                                     {
                                         userScore -= 10;
                                     }
 
+                                    // user scored higher than dealer
                                     if (userScore > dealerScore && userScore <= 21)
                                     {
                                         user.GameScore++;
                                     }
 
+                                    // user scored lower then dealer or went bust
                                     if (userScore < dealerScore || userScore >= 22)
                                     {
                                         user.GameScore--;
@@ -319,13 +316,13 @@ namespace WebDev.Controllers
                             }
 
                             db.SaveChanges();
-                            // all players check :(
                         }
                     }
                 }
             }
         }
 
+        // disable a player within a group
         public void DisablePlayer(int playerID, string gameID)
         {
             if (playerID != null && gameID != null)
@@ -345,6 +342,7 @@ namespace WebDev.Controllers
 
                     bool userNotDisabled = true;
 
+                    // check if all users are disabled
                     foreach (ConnectedUser user in allConnectedUsers)
                     {
                         if (user.IsDisabled != null && !(bool)user.IsDisabled)
@@ -353,39 +351,54 @@ namespace WebDev.Controllers
                         }
                     }
 
+                    // all users are disabled, end the round
                     if (userNotDisabled)
                     {
+                        // send final scores
                         sendPlayerScores(gameID);
+
+                        // give give dealer cards until hand is finished
                         GiveDealerCard(gameID);
+
+                        // assess player scores
                         AssessPoints(gameID);
+
+                        // wait 2.5 seconds, so next round does not start immediately
                         Thread.Sleep(2500);
+
+                        // start new round
                         NewRound(gameID);
                     }
                 }
             }
         }
 
+        // count the score of the player with cards
         public void countScore(List<DeckCards> cards, int? playerID = null, string? gameID = null, bool isDealer = false)
         {
             int score = 0;
-            int score2 = 0;
+            int score2 = 0; // only used when player has an Ace
             bool AceFound = false;
             bool SymbolFound = false;
 
+            // go through all cards and set flags accordingly
             foreach (DeckCards card in cards)
             {
+                // Ace found
                 if (card.Rank == "A")
                 {
                     score += 11;
                     score2 += 1;
                     AceFound = true;
                 }
+                // Picture found
                 else if (card.Rank == "K" || card.Rank == "Q" || card.Rank == "J")
                 {
                     score += 10;
                     score2 += 10;
                     SymbolFound = true;
                 }
+                // Normal card found
                 else
                 {
                     score += int.Parse(card.Rank);
@@ -399,10 +412,11 @@ namespace WebDev.Controllers
                 {
                     Dealer dealer = db.Dealers.Where(x => x.ID == playerID).FirstOrDefault();
 
-
+                    // check if both flags are set with 2 cards, blackjack
                     if (SymbolFound && AceFound && cards.Count == 2)
                     {
                         SendDealerScore("Blackjack", gameID);
+
                         dealer.HasAce = true;
                         dealer.HandScore = 21;
 
@@ -411,30 +425,37 @@ namespace WebDev.Controllers
                         return;
                     }
 
+                    // score is below 22, not bust
                     if (score <= 21)
                     {
                         SendDealerScore(score.ToString(), gameID);
                         dealer.HandScore = score;
                     }
+                    // ace is found
                     else if (AceFound)
                     {
                         dealer.HasAce = true;
+
+                        // score is below 22
                         if (score <= 21)
                         {
                             SendDealerScore(score2 + "/" + score, gameID);
                             dealer.HandScore = score;
                         }
+                        // only score where ace counts as 1 is below 22
                         else if (score2 <= 21)
                         {
                             SendDealerScore(score2.ToString(), gameID);
                             dealer.HandScore = score;
                         }
+                        // both scores are above 21, bust
                         else
                         {
                             SendDealerScore("Bust", gameID);
                             dealer.HandScore = 22;
                         }
                     }
+                    // no Ace found, score too high, bust
                     else
                     {
                         SendDealerScore("Bust", gameID);
@@ -443,23 +464,29 @@ namespace WebDev.Controllers
 
                     db.SaveChanges();
 
+                    // used for getting highest score
                     int totalScore = score;
 
+                    // score is too high along with Ace in hand
                     if (score > 21 && AceFound)
                     {
                         totalScore -= 10;
                     }
 
+                    // More than 1 card is in hand
                     if (cards.Count > 1)
                     {
+                        // total score is not high enough, must draw
                         if (totalScore < 16)
                         {
                             Thread.Sleep(1000); //small delay for realism
-                            GiveDealerCard(gameID);
+
+                            GiveDealerCard(gameID); // give dealer another card repeating the process until score is high enough
                         }
                     }
                 }
             }
+            // Same process as above, but then for user
             else
             {
                 using (WebAppContext db = new WebAppContext())
@@ -512,6 +539,7 @@ namespace WebDev.Controllers
                             return;
                         }
 
+                        // either score is 21, also disable the player, turn is finished
                         if (score == 21 || score2 == 21)
                         {
                             user.HandScore = 21;
@@ -544,6 +572,18 @@ namespace WebDev.Controllers
                         }
                     }
 
+                    // player has score of 21, turn is over
+                    if (score == 21)
+                    {
+                        user.HandScore = 21;
+                        db.SaveChanges();
+
+                        SendPlayerScore(user.UserID, "21", gameID);
+                        DisablePlayer((int)playerID, gameID);
+
+                        return;
+                    }
+
                     user.HandScore = score;
                     db.SaveChanges();
 
@@ -552,6 +592,7 @@ namespace WebDev.Controllers
             }
         }
 
+        // player leaves, uses AuthToken as authenticator
         public async Task playerLeave(string LobbyID, string PlayerID, string AuthToken)
         {
             using (WebAppContext db = new WebAppContext())
@@ -569,6 +610,7 @@ namespace WebDev.Controllers
             }
         }
 
+        // player ends own turn, uses AuthToken as authenticator
         public async Task playerStand(string LobbyID, string PlayerID, string AuthToken)
         {
             using (WebAppContext db = new WebAppContext())
@@ -587,6 +629,7 @@ namespace WebDev.Controllers
             }
         }
 
+        // player takes another card, uses AuthToken as authenticator
         public async Task playerHit(string LobbyID, string PlayerID, string AuthToken)
         {
             using (WebAppContext db = new WebAppContext())
@@ -605,6 +648,7 @@ namespace WebDev.Controllers
             GivePlayerCard(LobbyID, int.Parse(PlayerID));
         }
 
+        // ends current round, also used for initial cleaner
         public void EndRound(int GameID, bool firstClear)
         {
             using (WebAppContext db = new WebAppContext())
@@ -629,6 +673,39 @@ namespace WebDev.Controllers
                 }
 
                 db.SaveChanges();
+            }
+        }
+
+        // admin or moderator ends the round by force, uses AuthToken as authenticator
+        public void ForceEnd(string gameID, string userID, string AuthToken)
+        {
+            using (WebAppContext db = new WebAppContext())
+            {
+                ConnectedUser connectedUser = db.ConnectedUsers.Where(x =>
+                    x.GameID == int.Parse(gameID) &&
+                    x.UserID == int.Parse(userID) &&
+                    x.AuthToken == AuthToken &&
+                    !(bool)x.IsDisabled).FirstOrDefault();
+
+                if (connectedUser == null)
+                {
+                    return;
+                }
+
+                List<ConnectedUser> users = db.ConnectedUsers.Where(x => x.GameID == int.Parse(gameID)).ToList();
+
+                foreach (ConnectedUser user in users)
+                {
+                    user.IsDisabled = true;
+                }
+
+                db.SaveChanges();
+
+                sendPlayerScores(gameID);
+                GiveDealerCard(gameID);
+                AssessPoints(gameID);
+                Thread.Sleep(2500);
+                NewRound(gameID);
             }
         }
 
@@ -681,6 +758,7 @@ namespace WebDev.Controllers
             await Clients.Group(groupID).SendAsync("newRound");
         }
 
+        // gather all scores of players and send it to every user in group in correct format
         public async Task sendPlayerScores(string groupID)
         {
             List<PlayerScoreDataViewModel> userList = new List<PlayerScoreDataViewModel>();
@@ -734,7 +812,6 @@ namespace WebDev.Controllers
 
             await Clients.Group(groupID).SendAsync("playerPointsList", json);
         }
-
 
         public string EncodeString(string str)
         {

@@ -17,7 +17,7 @@ namespace WebDev.Controllers
                 if (user == null)
                 {
                     string message = "Combination of this username/password is not present in database";
-                    @ViewData["RegistrationMessage"] = message;
+                    @TempData["ErrorMessage"] = message;
 
                     LogItem logItem = new LogItem();
 
@@ -25,13 +25,29 @@ namespace WebDev.Controllers
                     logItem.TimeOfOccurence = DateTime.Now;
                     logItem.Source = "Login";
                     logItem.Type = "Email";
-                    logItem.IsError = true;
+                    logItem.IsError = false;
 
 
                     db.LogItem.Add(logItem);
 
                     db.SaveChanges();
 
+
+                    return View("Index");
+                }
+
+                if (user.VerifiedAt == null)
+                {
+                    string body = "Verify your email by copy and pasting this link in your browser: " + Request.Host + "/User/VerifyEmail?token=" +
+                                  user.VerifyToken;
+
+                    MailController.SendEmail(
+                        user.Email,
+                        "Verify your email",
+                        body
+                    );
+
+                    @TempData["ErrorMessage"] = "User has not been verified. A new email has been sent.";
 
                     return View("Index");
                 }
@@ -54,14 +70,16 @@ namespace WebDev.Controllers
 
                     db.SaveChanges();
 
-                    @ViewData["ErrorTitle"] = "Error ID: " + logItem.ID;
-                    @ViewData["ErrorMessage"] = message;
+                    @TempData["ErrorTitle"] = "Error ID: " + logItem.ID;
+                    @TempData["ErrorMessage"] = message;
 
                     return View("Index");
                 }
 
                 HttpContext.Session.SetInt32("LoggedIn", 1);
                 HttpContext.Session.SetInt32("UserID", user.ID);
+                HttpContext.Session.SetInt32("Role", (int)user.Role);
+
                 return Redirect("/Home");
             }
         }
@@ -71,13 +89,13 @@ namespace WebDev.Controllers
         {
             if (password.Length < 16)
             {
-                @ViewData["ErrorMessage"] = "The password is not long enough! The requirements is longer than 15 characters";
+                @TempData["ErrorMessage"] = "The password is not long enough! The requirements is longer than 15 characters";
                 return View("Index");
             }
 
             if (password != passwordConfirmation)
             {
-                @ViewData["ErrorMessage"] = "Confirmation password was not equal!";
+                @TempData["ErrorMessage"] = "Confirmation password was not equal!";
                 return View("Index");
             }
 
@@ -85,7 +103,7 @@ namespace WebDev.Controllers
             {
                 if (db.Users.Where(x => x.Email == email).FirstOrDefault<User>() != null)
                 {
-                    @ViewData["ErrorMessage"] = "Email is already in use!";
+                    @TempData["ErrorMessage"] = "Email is already in use!";
                     return View("Index");
                 }
 
@@ -131,14 +149,14 @@ namespace WebDev.Controllers
 
                         db.SaveChanges();
 
-                        @ViewData["ErrorTitle"] = "Error ID: " + logItem.ID;
-                        @ViewData["ErrorMessage"] = "A field was not filled correctly, try again!";
+                        @TempData["ErrorTitle"] = "Error ID: " + logItem.ID;
+                        @TempData["ErrorMessage"] = "A field was not filled correctly, try again!";
                     }
                     else
                     {
                         user.Insert(db);
 
-                        string body = "Verify your email: " + Request.Host + "/User/VerifyEmail?token=" +
+                        string body = "Verify your email by copy and pasting this link in your browser: " + Request.Host + "/User/VerifyEmail?token=" +
                                       user.VerifyToken;
 
                         MailController.SendEmail(
@@ -147,12 +165,12 @@ namespace WebDev.Controllers
                             body
                         );
 
-                        @ViewData["ErrorMessage"] = "User has been created, check your email.";
+                        @TempData["ErrorMessage"] = "User has been created, check your email.";
                     }
                 }
                 catch (Exception e)
                 {
-                    @ViewData["ErrorMessage"] = "A field was not filled correctly, try again!";
+                    @TempData["ErrorMessage"] = "A field was not filled correctly, try again!";
                 }
 
                 return View("Index");
@@ -176,7 +194,7 @@ namespace WebDev.Controllers
 
                 db.SaveChanges();
 
-                string body = "Reset your password: " + Request.Host + "/User/PasswordReset?token=" + user.PasswordToken;
+                string body = "Reset your password by copy and pasting this link to your browser: " + Request.Host + "/User/PasswordReset?token=" + user.PasswordToken;
 
                 MailController.SendEmail(
                     user.Email,
@@ -184,7 +202,7 @@ namespace WebDev.Controllers
                     body
                 );
 
-                @ViewData["ErrorMessage"] = "An email has been sent to reset your password.";
+                @TempData["ErrorMessage"] = "An email has been sent to reset your password.";
 
                 LogItem logItem = new LogItem();
 
@@ -207,7 +225,7 @@ namespace WebDev.Controllers
         {
             if (password != passwordConfirmation)
             {
-                @ViewData["ErrorMessage"] = "The passwords you filled are not the same, try again!";
+                @TempData["ErrorMessage"] = "The passwords you filled are not the same, try again!";
 
                 return Redirect("/User/VerifyEmail?token=" + userToken);
             }
@@ -220,7 +238,7 @@ namespace WebDev.Controllers
 
                 db.SaveChanges();
 
-                @ViewData["ErrorMessage"] = "Password had been reset, please try logging in now.";
+                @TempData["ErrorMessage"] = "Password had been reset, please try logging in now.";
 
                 LogItem logItem = new LogItem();
 
@@ -236,6 +254,117 @@ namespace WebDev.Controllers
             }
 
             return Redirect("/");
+        }
+
+        [HttpPost]
+        public IActionResult UpdatePassword(string currentPassword, string newPassword, string newPasswordConfirmation,
+            string userId, string userToken)
+        {
+            if (newPasswordConfirmation != newPassword)
+            {
+                @TempData["ErrorMessage"] = "Passwords are not equal!";
+                return Redirect("/User/ChangePassword");
+            }
+
+
+            if (newPassword == null || newPassword.Length < 16)
+            {
+                @TempData["ErrorMessage"] = "New password is not long enough!";
+                return Redirect("/User/ChangePassword");
+            }
+
+
+            try
+            {
+                using (WebAppContext db = new WebAppContext())
+                {
+                    User user = db.Users.Where(x => x.ID == int.Parse(userId) && x.PasswordToken == userToken).FirstOrDefault();
+
+                    if (user == null)
+                    {
+                        LogItem logItem = new LogItem();
+                        logItem.IsError = true;
+                        logItem.Message = "User tried to alter other user's password.";
+                        logItem.Source = "API";
+                        logItem.Type = "UpdatePassword";
+                        logItem.TimeOfOccurence = DateTime.Now;
+
+                        db.SaveChanges();
+
+                        @TempData["ErrorTitle"] = "Error ID: " + logItem.ID;
+                        @TempData["ErrorMessage"] = "User not found!";
+                        return Redirect("/User/ChangePassword");
+                    }
+
+                    string oldPassword = user.Password;
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+                    ValidationContext context = new ValidationContext(user, serviceProvider: null, items: null);
+                    List<ValidationResult> results = new List<ValidationResult>();
+                    bool isValid = Validator.TryValidateObject(user, context, results, true);
+
+                    if (!isValid)
+                    {
+                        StringBuilder sbrErrors = new StringBuilder();
+                        foreach (ValidationResult validationResult in results)
+                        {
+                            sbrErrors.AppendLine(validationResult.ErrorMessage);
+                        }
+
+                        LogItem logItem = new LogItem();
+
+                        logItem.Message = "Validation failed for password change form with errors:" +
+                                          sbrErrors.ToString();
+                        logItem.TimeOfOccurence = DateTime.Now;
+                        logItem.Source = "API";
+                        logItem.Type = "ChangePassword";
+                        logItem.IsError = true;
+
+                        db.LogItem.Add(logItem);
+
+                        user.Password = oldPassword;
+
+                        db.SaveChanges();
+
+                        @TempData["ErrorTitle"] = "Error ID: " + logItem.ID;
+                        @TempData["ErrorMessage"] = logItem.Message;
+                        return Redirect("/User/ChangePassword");
+                    }
+
+                    db.SaveChanges();
+
+                    LogItem log = new LogItem();
+                    log.IsError = false;
+                    log.Message = "User with ID: " + user.ID + " has changed their password";
+                    log.Source = "API";
+                    log.Type = "UpdatePassword";
+                    log.TimeOfOccurence = DateTime.Now;
+
+                    db.SaveChanges();
+                }
+
+                @TempData["ErrorMessage"] = "Succesfully changed password, please log in again";
+                Logout();
+                return Redirect("/");
+            }
+            catch (Exception ex)
+            {
+                using (WebAppContext db = new WebAppContext())
+                {
+                    LogItem log = new LogItem();
+                    log.IsError = true;
+                    log.Message = ex.InnerException.ToString();
+                    log.Source = "API";
+                    log.Type = "UpdatePassword";
+                    log.TimeOfOccurence = DateTime.Now;
+
+                    db.SaveChanges();
+
+                    @TempData["ErrorTitle"] = "Error ID: " + log.ID;
+                    @TempData["ErrorMessage"] = ex.InnerException;
+                    return Redirect("/User/ChangePassword");
+                }
+            }
         }
 
         public IActionResult PasswordReset(string token)
@@ -266,12 +395,12 @@ namespace WebDev.Controllers
 
                         db.SaveChanges();
 
-                        @ViewData["ErrorMessage"] = "Your email has been verified, please log in now.";
+                        @TempData["ErrorMessage"] = "Your email has been verified, please log in now.";
                     }
                     else
                     {
                         LogItem logItem = new LogItem();
-                        
+
                         logItem.Message = "Access-control failed on email verification with fake token";
                         logItem.TimeOfOccurence = DateTime.Now;
                         logItem.Source = "User";
@@ -300,6 +429,34 @@ namespace WebDev.Controllers
             }
 
             return View();
+        }
+
+        public IActionResult ChangePassword()
+        {
+            User user = null;
+            using (WebAppContext db = new WebAppContext())
+            {
+                int userID = (int)HttpContext.Session.GetInt32("UserID");
+                user = db.Users.Find(userID);
+
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                user.PasswordToken = new string(Enumerable.Repeat(chars, 32)
+                    .Select(s => s[new Random(BCrypt.Net.BCrypt.GenerateSalt().GetHashCode()).Next(s.Length)]).ToArray());
+
+                db.SaveChanges();
+            }
+
+            return View(user);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.SetInt32("LoggedIn", 0);
+            HttpContext.Session.SetInt32("UserID", 0);
+            HttpContext.Session.SetInt32("Role", 0);
+
+            return Redirect("/");
         }
     }
 }

@@ -58,3 +58,18 @@ input {
 .passwordLabel {
     font-size: 0.75em;
 }
+
+.change-password-button {
+    background: #09e326;
+    border: 1px solid green;
+    border-radius: 5px;
+    color: white;
+    width: 50%;
+    padding: 1%;
+    font-weight: bold;
+}
+
+.change-password-button:hover {
+        background: green;
+        border: 1px solid green;
+    }

@@ -39,7 +39,13 @@
             <section class="player-card-section" id="player-card-section"></section>
         </section>
 
+
     </section>
+
+    @if (Accessor.HttpContext.Session.GetInt32("Role") > 1)
+    {
+        <button class="admin-button">Force Round End</button>
+    }
 
     <footer class="action-footer">
         <button class="stand-button">Stand</button>
@@ -318,7 +324,15 @@
 
     $('.leave-button').on('click', function () {
         connection.invoke('playerLeave', '@Model.LobbyID', '@Model.UserID', '@Model.UserToken');
-        
+
         window.location.href = '/';
     });
 </script>
+@if (Accessor.HttpContext.Session.GetInt32("Role") > 1)
+{
+    <script>
+        $('.admin-button').on('click', function () {
+            connection.invoke('ForceEnd', '@Model.LobbyID', '@Model.UserID', '@Model.UserToken');
+        });
+    </script>
+}

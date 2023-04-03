@@ -33,6 +33,10 @@
       "PackagePath": "staticwebassets\\css\\profile.css"
     },
     {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\rolemanagement.css",
+      "PackagePath": "staticwebassets\\css\\rolemanagement.css"
+    },
+    {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
@@ -41,12 +45,12 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\images\\Greg.jpg",
-      "PackagePath": "staticwebassets\\images\\Greg.jpg"
-    },
-    {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\images\\person-icon.png",
       "PackagePath": "staticwebassets\\images\\person-icon.png"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\images\\second-image-placeholder.jpg",
+      "PackagePath": "staticwebassets\\images\\second-image-placeholder.jpg"
     },
     {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\js\\GDPR.js",
@@ -307,6 +311,46 @@
     {
       "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\.gitignore",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\.gitignore"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\README.md",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\README.md"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\bower.json",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\bower.json"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\index-svg.html",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\index-svg.html"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\index.html",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\index.svg",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\index.svg"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\qrcode.js",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\qrcode.js"
+    },
+    {
+      "Id": "C:\\Users\\Daan\\OneDrive - Windesheim Office365\\Documents\\WebDev\\Setup\\wwwroot\\lib\\qrcodejs-master\\qrcode.min.js",
+      "PackagePath": "staticwebassets\\lib\\qrcodejs-master\\qrcode.min.js"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.WebDev.Microsoft.AspNetCore.StaticWebAssets.props",

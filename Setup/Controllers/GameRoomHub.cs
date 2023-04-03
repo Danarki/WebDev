@@ -8,12 +8,14 @@ namespace WebDev.Controllers
 {
     public class GameRoomHub : Hub
     {
+        // try to delete room with token as authenticator
         public async Task DeleteRoom(string token, string groupID)
         {
             using (WebAppContext db = new WebAppContext())
             {
                 IQueryable<GameRoom> roomBuilder = db.GameRooms.Where(x => x.OwnerToken == token);
 
+                // any rooms with this token?
                 if (roomBuilder.Any())
                 {
                     db.GameRooms.Remove(roomBuilder.First());
@@ -29,7 +31,7 @@ namespace WebDev.Controllers
                     logItem.Message = "Access-control failed for Room Deletion";
                     logItem.TimeOfOccurence = DateTime.Now;
                     logItem.Source = "GameRoomHub";
-                    logItem.Type = "CreateRoom";
+                    logItem.Type = "DeleteRoom";
                     logItem.IsError = true;
 
                     db.LogItem.Add(logItem);
@@ -44,6 +46,7 @@ namespace WebDev.Controllers
             return System.Web.HttpUtility.HtmlEncode(str);
         }
 
+        // Get all users in group with ID
         public async Task GetGroupUsers(int groupID)
         {
             using (WebAppContext db = new WebAppContext())
@@ -65,6 +68,7 @@ namespace WebDev.Controllers
                         }
                     }
 
+                    // ready response JSON
                     JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
 
                     serializerSettings.StringEscapeHandling = StringEscapeHandling.EscapeHtml;
@@ -76,16 +80,7 @@ namespace WebDev.Controllers
             }
         }
 
-        public async Task playerJoined(string playerName, string groupID)
-        {
-            await Clients.Group(groupID).SendAsync("playerJoined", EncodeString(playerName));
-        }
-
-        public async Task playerLeft(string playerName, string groupID)
-        {
-            await Clients.Group(groupID).SendAsync("playerLeft", EncodeString(playerName));
-        }
-
+        // Add current user to the room they connected to
         public void AddToRoom(int roomID)
         {
             HttpContext context = new HttpContextAccessor().HttpContext;
@@ -117,8 +112,10 @@ namespace WebDev.Controllers
 
                             Groups.AddToGroupAsync(Context.ConnectionId, roomID.ToString());
 
+                            // send notification to other users that this user has joined
                             playerJoined(user.Username, roomID.ToString());
 
+                            // get users for current group
                             GetGroupUsers(roomID);
                         }
                     }
@@ -126,6 +123,7 @@ namespace WebDev.Controllers
             }
         }
 
+        // remove self from room with room ID
         public async void RemoveFromRoom(int roomID)
         {
             HttpContext context = new HttpContextAccessor().HttpContext;
@@ -140,6 +138,7 @@ namespace WebDev.Controllers
 
                     User user = db.Users.Where(x => x.ID == userId).FirstOrDefault();
 
+                    // user was found?
                     if (user != null)
                     {
                         ConnectedUser c = new ConnectedUser();
@@ -150,8 +149,10 @@ namespace WebDev.Controllers
                             .Where(x => x.UserID == userId && x.RoomID == roomID)
                             .FirstOrDefault();
 
+                        // connected user is found?
                         if (connectedCheck != null)
                         {
+                            // remove user from every connection, this prevents duplicates as well
                             db.ConnectedUsers.RemoveRange(
                                 db.ConnectedUsers.Where(
                                     x => x.UserID == userId && x.RoomID == roomID
@@ -162,21 +163,25 @@ namespace WebDev.Controllers
 
                             Groups.RemoveFromGroupAsync(Context.ConnectionId, roomID.ToString());
 
+                            // send notification to other users
                             playerLeft(user.Username, roomID.ToString());
                         }
 
+                        // check if room has to be removed because empty
                         await CheckEmptyRoom(roomID);
                     }
                 }
             }
         }
 
+        // checks if room with ID has to be deleted
         public async Task CheckEmptyRoom(int roomID)
         {
             using (WebAppContext db = new WebAppContext())
             {
                 IQueryable<ConnectedUser> connectionsBuilder = db.ConnectedUsers.Where(x => x.RoomID == roomID);
 
+                // checks for no remaining connections
                 if (!connectionsBuilder.Any())
                 {
                     string roomToken = db.GameRooms.Where(x => x.ID == roomID).First().OwnerToken;
@@ -185,22 +190,26 @@ namespace WebDev.Controllers
             }
         }
 
+        // starts game with token as authenticator, only owner with token may start
         public async Task StartGame(string token, string groupID)
         {
             using (WebAppContext db = new WebAppContext())
             {
-                GameRoom roomBuilder = db.GameRooms.Where(x => x.OwnerToken == token && x.ID == int.Parse(groupID)).FirstOrDefault();
+                GameRoom room = db.GameRooms.Where(x => x.OwnerToken == token && x.ID == int.Parse(groupID)).FirstOrDefault();
 
-                if (roomBuilder != null)
+                // check if room was found
+                if (room != null)
                 {
-                    roomBuilder.HasStarted = true;
+                    room.HasStarted = true; // set room has started flag, room no longer gets shown in the overview
                     
                     List<ConnectedUser> userList = db.ConnectedUsers.Where(x => x.RoomID == int.Parse(groupID)).ToList();
 
+                    // check if there are any users
                     if (userList != null)
                     {
                         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+                        // give every user an authtoken and assign the game ID
                         foreach (ConnectedUser user in userList)
                         {
                             user.GameID = user.RoomID;
@@ -211,9 +220,19 @@ namespace WebDev.Controllers
 
                     db.SaveChanges();
 
-                    await Clients.Group(groupID).SendAsync("gameStarted", roomBuilder.ID);
+                    await Clients.Group(groupID).SendAsync("gameStarted", room.ID);
                 }
             }
+        }
+
+        public async Task playerJoined(string playerName, string groupID)
+        {
+            await Clients.Group(groupID).SendAsync("playerJoined", EncodeString(playerName));
+        }
+
+        public async Task playerLeft(string playerName, string groupID)
+        {
+            await Clients.Group(groupID).SendAsync("playerLeft", EncodeString(playerName));
         }
     }
 }

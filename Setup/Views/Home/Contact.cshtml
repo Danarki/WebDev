@@ -1,7 +1,4 @@
-﻿@using WebDev.Controllers
-@model Developer
-
-<link rel="stylesheet" href="~/css/contact.css" />
+﻿<link rel="stylesheet" href="~/css/contact.css" />
 
 <div class="form-box">
     <form action="SendContact" method="post" id="contact-form" asp-antiforgery="true">
@@ -51,6 +48,7 @@
                 + '&subject=' + subject
                 + '&email=' + email;
 
+            console.log(url + parameterFormat);
             $.ajax({
                 type: "POST",
                 url: url + parameterFormat,
